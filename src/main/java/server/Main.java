@@ -14,7 +14,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		ObjectMapper mapper = new ObjectMapper();
-		Ablesung a = new Ablesung("a",  new Date(), "b",false, 0);
+		Kunde k = new Kunde("a", "b");
+		Ablesung a = new Ablesung("a",  new Date(), k,"b",false, 0);
 		System.out.println(a);
 		try {
 			System.out.println(mapper.writeValueAsString(a));

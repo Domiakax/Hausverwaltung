@@ -1,5 +1,7 @@
 package client;
 
+import java.util.Date;
+
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -17,18 +19,19 @@ public class Main {
 		Builder build = target.path("ablesung").path("hello").request(MediaType.TEXT_PLAIN);
 		System.out.println(build.get());
 		
-		target = client.target("http://localhost:8080/test");
+		target = client.target("http://localhost:8080/test/ablesung");
 		Kunde k = new Kunde("Huber", "Hans");
-		System.out.println(Entity.entity(k, MediaType.APPLICATION_JSON));
-		String b =
-		target.path("ablesung").path("neuerKunde").request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN).put(Entity.entity(k, MediaType.APPLICATION_JSON), String.class);
-		System.out.println(b);
+//		System.out.println(Entity.entity(k, MediaType.APPLICATION_JSON));
+		 Response b =
+		target.path("neuerKunde").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).put(Entity.entity(k, MediaType.APPLICATION_JSON));
+		System.out.println(b.readEntity(String.class));
 		
-		Ablesung a = new Ablesung("1a", null, "test", false, 0);
-		target = client.target("http://localhost:8080/test");
-		String c =
-				target.path("ablesung").path("postAblesung").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(k, MediaType.APPLICATION_JSON), String.class);
+		target = client.target("http://localhost:8080/test/ablesung");
+		k.setKdnr(1);
+		Ablesung a = new Ablesung("1a", new Date(System.currentTimeMillis()),k, "test", false, 0);
+//		System.out.println(Entity.entity(a, MediaType.APPLICATION_JSON));
+		Response c =
+				target.path("postAblesung").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(a, MediaType.APPLICATION_JSON));
 		System.out.println(c);
 	}
-
 }

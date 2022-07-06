@@ -1,5 +1,7 @@
 package server;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,10 +26,10 @@ import jakarta.ws.rs.core.Response;
 @Path("ablesung")
 public class AblesungRessource {
 	
-	private static final ObjectMapper mapper = new ObjectMapper();
-	private final HashMap<Kunde, List<Ablesung>> datastore = new HashMap<>();
+//	private static final ObjectMapper mapper = new ObjectMapper();
+	private static final HashMap<Kunde, List<Ablesung>> datastore = new HashMap<>();
 	private static final SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
-	private Timestamp lastWritten;
+	private long lastWritten;
 	
 	@Path("hello")
 	@GET
@@ -58,12 +60,17 @@ public class AblesungRessource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("postAblesung")
-	public Response postAblesung(Kunde k, Ablesung a) {
+	public Response postAblesung(Ablesung a) {
+		Kunde k = a.getKunde();
+		System.out.println(k);
+		System.out.println(datastore.size());
 		if(!datastore.containsKey(k)) {
-			return Response.status(Response.Status.NOT_FOUND).build();
+			return Response.status(Response.Status.PRECONDITION_FAILED).build();
 		}
+		//Duplikate?
 		datastore.get(k).add(a);
-		return Response.status(Response.Status.)
+		datastore.get(k).stream().forEach(System.out::println);
+		return Response.status(Response.Status.CREATED).build();
 	}
 	
 	@PUT
@@ -73,7 +80,15 @@ public class AblesungRessource {
 	public Response neuerKunde(Kunde k) {
 		k.setKdnr(datastore.size()+1);
 		datastore.put(k, new ArrayList<Ablesung>());
+		System.out.println(k);
+		System.out.println(datastore.size());
 		System.out.println("Kunde angelegt");
 		return Response.status(Response.Status.CREATED).entity(k).build();
 	}
+	
+	private void writeToFile(Ablesung a) {
+		File f = new File("test.json");
+		Files.lines(null)
+	}
+	
 }
