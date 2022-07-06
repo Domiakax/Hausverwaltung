@@ -1,17 +1,12 @@
 package server;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -27,7 +22,7 @@ import jakarta.ws.rs.core.Response;
 public class AblesungRessource {
 	
 //	private static final ObjectMapper mapper = new ObjectMapper();
-	private static final HashMap<Kunde, List<Ablesung>> datastore = new HashMap<>();
+//	private final HashMap<Kunde, List<Ablesung>> datastore = new HashMap<>();
 	private static final SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
 	private long lastWritten;
 	
@@ -78,17 +73,9 @@ public class AblesungRessource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("neuerKunde")
 	public Response neuerKunde(Kunde k) {
-		k.setKdnr(datastore.size()+1);
-		datastore.put(k, new ArrayList<Ablesung>());
-		System.out.println(k);
-		System.out.println(datastore.size());
+		Datastore.getDataStore().addNewKunde(k);
 		System.out.println("Kunde angelegt");
 		return Response.status(Response.Status.CREATED).entity(k).build();
-	}
-	
-	private void writeToFile(Ablesung a) {
-		File f = new File("test.json");
-		Files.lines(null)
 	}
 	
 }
