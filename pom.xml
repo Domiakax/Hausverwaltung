@@ -48,5 +48,10 @@
 		<version>5.4.0</version>
 		<scope>test</scope>
 	</dependency>
+	<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20220320</version>
+</dependency>
   </dependencies>
 </project>

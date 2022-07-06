@@ -39,7 +39,7 @@ public class AblesungRessource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getAblesungen(Kunde k) {
-		List<Ablesung> ablesungen = datastore.get(k);
+//		List<Ablesung> ablesungen = Datastore.getDataStore().
 		return Response.status(Response.Status.OK).entity(ablesungen).build();
 	}
 	
@@ -58,13 +58,7 @@ public class AblesungRessource {
 	public Response postAblesung(Ablesung a) {
 		Kunde k = a.getKunde();
 		System.out.println(k);
-		System.out.println(datastore.size());
-		if(!datastore.containsKey(k)) {
-			return Response.status(Response.Status.PRECONDITION_FAILED).build();
-		}
-		//Duplikate?
-		datastore.get(k).add(a);
-		datastore.get(k).stream().forEach(System.out::println);
+		if(Datastore.getDataStore().postAblesung(a))
 		return Response.status(Response.Status.CREATED).build();
 	}
 	
