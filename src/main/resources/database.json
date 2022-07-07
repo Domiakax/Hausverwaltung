@@ -1,1 +1,1 @@
-{"Kunde(kdnr=1, name=Huber, vorname=Hans)":[{"zaehlernummer":"1a","datum":1657133322007,"kunde":{"kdnr":1,"name":"Huber","vorname":"Hans"},"kommentar":"test","neuEingebaut":false,"zaehlerstand":0}]}
+{"Kunde(kdnr=1, name=Huber, vorname=Hans)":[{"zaehlernummer":"1a","datum":1657174779601,"kunde":{"kdnr":1,"name":"Huber","vorname":"Hans"},"kommentar":"test","neuEingebaut":false,"zaehlerstand":0}]}

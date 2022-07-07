@@ -1,12 +1,6 @@
 package server;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -21,9 +15,6 @@ import jakarta.ws.rs.core.Response;
 @Path("ablesung")
 public class AblesungRessource {
 	
-//	private static final ObjectMapper mapper = new ObjectMapper();
-//	private final HashMap<Kunde, List<Ablesung>> datastore = new HashMap<>();
-	private static final SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
 	private long lastWritten;
 	
 	@Path("hello")
@@ -62,6 +53,15 @@ public class AblesungRessource {
 			return Response.status(Response.Status.CREATED).build();
 		}
 		return Response.status(Response.Status.CONFLICT).build();
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("modifyAblesung")
+	public Response modifyAblesung(Ablesung a) {
+		Kunde k = a.getKunde();
+		
 	}
 	
 	@PUT
