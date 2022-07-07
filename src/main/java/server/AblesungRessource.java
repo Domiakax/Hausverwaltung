@@ -34,14 +34,14 @@ public class AblesungRessource {
 		return "hello world";
 	}
 	
-	@Path("ablesungen")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getAblesungen(Kunde k) {
-//		List<Ablesung> ablesungen = Datastore.getDataStore().
-		return Response.status(Response.Status.OK).entity(ablesungen).build();
-	}
+//	@Path("ablesungen")
+//	@GET
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public Response getAblesungen(Kunde k) {
+////		List<Ablesung> ablesungen = Datastore.getDataStore().
+//		return Response.status(Response.Status.OK).entity(ablesungen).build();
+//	}
 	
 	// To DO
 	@GET
@@ -58,8 +58,10 @@ public class AblesungRessource {
 	public Response postAblesung(Ablesung a) {
 		Kunde k = a.getKunde();
 		System.out.println(k);
-		if(Datastore.getDataStore().postAblesung(a))
-		return Response.status(Response.Status.CREATED).build();
+		if(Datastore.getDataStore().postAblesung(a)) {
+			return Response.status(Response.Status.CREATED).build();
+		}
+		return Response.status(Response.Status.CONFLICT).build();
 	}
 	
 	@PUT
