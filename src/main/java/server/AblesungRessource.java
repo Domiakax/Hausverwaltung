@@ -56,13 +56,13 @@ public class AblesungRessource {
 		return ResponseBuilder.ablesungNotCreated();
 	}
 	
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("modifyAblesung")
-	public Response modifyExistingAblesung(Ablesung a) {
-		List<Ablesung> ablesungen = Datastore.getDataStore().
-	}
+//	@POST
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Path("modifyAblesung")
+//	public Response modifyExistingAblesung(Ablesung a) {
+//		List<Ablesung> ablesungen = Datastore.getDataStore().
+//	}
 	
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
@@ -74,14 +74,14 @@ public class AblesungRessource {
 		return ResponseBuilder.kundeCreated(k);
 	}
 	
-	//ToDo
-	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteAblesung(Ablesung a) {
-		if(Datastore.getDataStore().deleteAblesung(a)) {
-			return ResponseBuilder.ablesungDeleted();
-		}
-		return null;
-	}
+//	//ToDo
+//	@DELETE
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response deleteAblesung(Ablesung a) {
+//		if(Datastore.getDataStore().deleteAblesung(a)) {
+//			return ResponseBuilder.ablesungDeleted();
+//		}
+//		return null;
+//	}
 	
 }

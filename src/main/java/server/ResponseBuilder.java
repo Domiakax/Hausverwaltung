@@ -20,6 +20,10 @@ public class ResponseBuilder {
 		return Response.status(Response.Status.CONFLICT).entity(createMessageResponseObject(Messages.ABLESUNG_NOT_CREATED)).build();
 	}
 	
+	public static Response ablesungModified() {
+		return Response.status(Response.Status.OK).entity(createMessageResponseObject(Messages.ABLESUNG_MODIFIED)).build();
+	}
+	
 	public static Response ablesungDeleted() {
 		return Response.status(Response.Status.OK).entity(createMessageResponseObject(Messages.ABLESUNG_DELETED)).build();
 	}

@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,6 +35,7 @@ public class Datastore {
 	public Kunde addNewKunde(Kunde k) {
 		k.setKdnr(database.size()+1);
 		database.put(k, Collections.synchronizedList(new ArrayList<Ablesung>()));
+		System.out.println(k);
 		return k;
 	}
 	
@@ -53,20 +53,23 @@ public class Datastore {
 	public boolean modifyExistingAblesung(Ablesung a) {
 		Kunde k = a.getKunde();
 		List<Ablesung> ablesungen = database.get(k);
+		boolean updated = false;
 		if(ablesungen == null) {
-			return false;
+			return updated;
 		}
 		for(Ablesung toUpdate : ablesungen) {
 			if(toUpdate.equals(a)) {
-				
+				toUpdate.updateAblesung(a);
+				updated = true;
 			}
 		}
+		return updated;
 	}
 	
-	public boolean deleteAblesung(Ablesung a) {
-		
-		
-	}
+//	public boolean deleteAblesung(Ablesung a) {
+//		
+//		
+//	}
 	
 	private void saveToFile() {
 		System.out.println(filePath);
