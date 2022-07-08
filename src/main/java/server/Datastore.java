@@ -6,15 +6,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Datastore {
 	
 	private static Datastore datastore = null;
-	private static HashMap<Kunde, List<Ablesung>> database;
+	private static ConcurrentHashMap<Kunde, List<Ablesung>> database;
 	private static final ObjectMapper mapper = new ObjectMapper();
 	private static final Path filePath = Paths.get("src", "main", "resources", "database.json");
 	private static final SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
@@ -27,13 +29,13 @@ public class Datastore {
 	}
 	
 	private Datastore() {
-		database = new HashMap<>();
+		database = new ConcurrentHashMap<>();
 		loadFromFile();
 	}
 	
 	public Kunde addNewKunde(Kunde k) {
 		k.setKdnr(database.size()+1);
-		database.put(k, new ArrayList<>());
+		database.put(k, Collections.synchronizedList(new ArrayList<Ablesung>()));
 		return k;
 	}
 	
@@ -46,6 +48,24 @@ public class Datastore {
 		ablesungen.add(a);
 		saveToFile();
 		return true;
+	}
+	
+	public boolean modifyExistingAblesung(Ablesung a) {
+		Kunde k = a.getKunde();
+		List<Ablesung> ablesungen = database.get(k);
+		if(ablesungen == null) {
+			return false;
+		}
+		for(Ablesung toUpdate : ablesungen) {
+			if(toUpdate.equals(a)) {
+				
+			}
+		}
+	}
+	
+	public boolean deleteAblesung(Ablesung a) {
+		
+		
 	}
 	
 	private void saveToFile() {
@@ -67,7 +87,7 @@ public class Datastore {
 		if(file.exists()) {
 		try {
 			System.out.println("HashMap geladen mit size:");
-			database = mapper.readValue(file, HashMap.class);
+			database = mapper.readValue(file, ConcurrentHashMap.class);
 			System.out.println(database.size());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -33,4 +33,10 @@ public class Ablesung {
 	private String kommentar;
 	private boolean neuEingebaut;
 	private int zaehlerstand;
+	
+	public void updateAblesung(Ablesung a) {
+		this.kommentar = a.kommentar;
+		this.neuEingebaut = a.neuEingebaut;
+		this.zaehlerstand = a.zaehlerstand;
+	}
 }

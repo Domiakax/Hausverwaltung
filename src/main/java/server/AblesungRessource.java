@@ -3,6 +3,7 @@ package server;
 import java.util.Date;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -50,18 +51,17 @@ public class AblesungRessource {
 		Kunde k = a.getKunde();
 		System.out.println(k);
 		if(Datastore.getDataStore().postAblesung(a)) {
-			return Response.status(Response.Status.CREATED).build();
+			return ResponseBuilder.ablesungCreated();
 		}
-		return Response.status(Response.Status.CONFLICT).build();
+		return ResponseBuilder.ablesungNotCreated();
 	}
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("modifyAblesung")
-	public Response modifyAblesung(Ablesung a) {
-		Kunde k = a.getKunde();
-		
+	public Response modifyExistingAblesung(Ablesung a) {
+		List<Ablesung> ablesungen = Datastore.getDataStore().
 	}
 	
 	@PUT
@@ -71,7 +71,17 @@ public class AblesungRessource {
 	public Response neuerKunde(Kunde k) {
 		Datastore.getDataStore().addNewKunde(k);
 		System.out.println("Kunde angelegt");
-		return Response.status(Response.Status.CREATED).entity(k).build();
+		return ResponseBuilder.kundeCreated(k);
+	}
+	
+	//ToDo
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteAblesung(Ablesung a) {
+		if(Datastore.getDataStore().deleteAblesung(a)) {
+			return ResponseBuilder.ablesungDeleted();
+		}
+		return null;
 	}
 	
 }
