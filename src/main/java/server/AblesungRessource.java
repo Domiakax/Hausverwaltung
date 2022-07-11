@@ -3,6 +3,7 @@ package server;
 import java.util.Date;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -84,6 +85,13 @@ public class AblesungRessource {
 			return ResponseBuilder.kundeModified();
 		}
 		return ResponseBuilder.kundeNotModified();
+	}
+	
+	@DELETE
+	@Produces
+	@Path("deleteKunde")
+	public Response deleteKunde() {
+		
 	}
 	
 //	//ToDo

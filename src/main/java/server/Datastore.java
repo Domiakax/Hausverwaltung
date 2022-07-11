@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +36,8 @@ public class Datastore {
 	}
 	
 	public Kunde addNewKunde(Kunde k) {
-		k.setKdnr(database.size()+1);
+		//Vektor wie ArrayList nur synchronisiert
+		k.setKdnr(UUID.randomUUID());
 		database.put(k, Collections.synchronizedList(new ArrayList<Ablesung>()));
 		System.out.println(k);
 		return k;
@@ -69,6 +71,9 @@ public class Datastore {
 		if(ablesungen == null) {
 			return updated;
 		}
+		// for Schleife bei Streams in Methode auslagern, synchronized
+		//für parallel Stream
+		//Methode für lastWrite aktualisieren
 		for(Ablesung toUpdate : ablesungen) {
 			if(toUpdate.equals(a)) {
 				toUpdate.updateAblesung(a);
