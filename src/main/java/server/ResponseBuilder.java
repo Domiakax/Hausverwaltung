@@ -1,5 +1,7 @@
 package server;
 
+import java.util.List;
+
 import org.json.JSONObject;
 
 import jakarta.ws.rs.core.Response;
@@ -18,6 +20,15 @@ public class ResponseBuilder {
 	public static Response kundeNotModified() {
 		return Response.status(Response.Status.NOT_FOUND).entity(createMessageResponseObject(Messages.KUNDE_NOT_FOUND)).build();
 	}
+	
+	public static Response kundeDeleted(List<Ablesung> ablesungen) {
+		return Response.status(Response.Status.OK).entity(ablesungen).build();
+	}
+	
+	public static Response kundeNotDeleted() {
+		return Response.status(Response.Status.NOT_FOUND).entity(createMessageResponseObject(Messages.KUNDE_NOT_DELETED)).build();
+	}
+	
 	public static Response ablesungCreated() {
 		return Response.status(Response.Status.CREATED).
 				entity(createMessageResponseObject(Messages.ABLESUNG_CREATED)).build();

@@ -52,6 +52,18 @@ public class Datastore {
 		return true;
 	}
 	
+	public List<Ablesung> deleteKunde(String id) {
+		try {
+			UUID uuid = UUID.fromString(id);
+			Kunde toSearch = new Kunde();
+			toSearch.setKdnr(uuid);
+			List<Ablesung> ablesungen = database.get(toSearch);
+			return ablesungen;
+		}catch (IllegalArgumentException e) {
+			return null;
+		}
+	}
+	
 	public boolean postAblesung(Ablesung a) {
 		Kunde k = a.getKunde();
 		if(!database.containsKey(k)){
@@ -60,35 +72,40 @@ public class Datastore {
 		List<Ablesung> ablesungen = database.get(k);
 		ablesungen.add(a);
 		saveToFile();
-		lastWrite = System.currentTimeMillis();
+		aktualisiereLastWrite();
 		return true;
 	}
 	
 	public boolean modifyExistingAblesung(Ablesung a) {
 		Kunde k = a.getKunde();
 		List<Ablesung> ablesungen = database.get(k);
-		boolean updated = false;
+		Boolean updated = false;
 		if(ablesungen == null) {
 			return updated;
 		}
-		// for Schleife bei Streams in Methode auslagern, synchronized
-		//für parallel Stream
-		//Methode für lastWrite aktualisieren
-		for(Ablesung toUpdate : ablesungen) {
-			if(toUpdate.equals(a)) {
-				toUpdate.updateAblesung(a);
-				updated = true;
-				lastWrite = System.currentTimeMillis();
-			}
-		}
+		ablesungen.parallelStream().filter(x -> x.equals(a))
+			.forEach(x -> updateAblesung(x ,a, updated));
+//		for(Ablesung toUpdate : ablesungen) {
+//			if(toUpdate.equals(a)) {
+//				toUpdate.updateAblesung(a);
+//				updated = true;
+//				lastWrite = System.currentTimeMillis();
+//			}
+//		}
+		saveToFile();
 		return updated;
 	}
 	
-//	public boolean deleteAblesung(Ablesung a) {
-//		
-//		
-//	}
+	private synchronized void updateAblesung(Ablesung x, Ablesung a, Boolean updated) {
+		x.updateAblesung(a);
+		updated = true;
+		aktualisiereLastWrite();
+	}
 	
+	private void aktualisiereLastWrite() {
+		lastWrite = System.currentTimeMillis();
+	}
+
 	private void saveToFile() {
 		System.out.println(filePath);
 		File file = filePath.toFile();

@@ -1,6 +1,7 @@
 package server;
 
 import java.util.Date;
+import java.util.List;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -88,10 +89,14 @@ public class AblesungRessource {
 	}
 	
 	@DELETE
-	@Produces
-	@Path("deleteKunde")
-	public Response deleteKunde() {
-		
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("deleteKunde/{id}")
+	public Response deleteKunde(@PathParam("id") String id) {
+		List<Ablesung> ablesungen = Datastore.getDataStore().deleteKunde(id);
+		if(ablesungen == null) {
+			return ResponseBuilder.kundeNotDeleted();
+		}
+		return ResponseBuilder.kundeDeleted(ablesungen);
 	}
 	
 //	//ToDo
