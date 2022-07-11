@@ -99,14 +99,15 @@ public class AblesungRessource {
 		return ResponseBuilder.kundeDeleted(ablesungen);
 	}
 	
-//	//ToDo
-//	@DELETE
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Response deleteAblesung(Ablesung a) {
-//		if(Datastore.getDataStore().deleteAblesung(a)) {
-//			return ResponseBuilder.ablesungDeleted();
-//		}
-//		return null;
-//	}
+	//ToDo
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("deletAblesung/{id}")
+	public Response deleteAblesung(Ablesung a) {
+		if(Datastore.getDataStore().deleteAblesung(a)) {
+			return ResponseBuilder.ablesungDeleted();
+		}
+		return null;
+	}
 	
 }

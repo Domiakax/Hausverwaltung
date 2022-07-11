@@ -38,6 +38,9 @@ public class Datastore {
 	public Kunde addNewKunde(Kunde k) {
 		//Vektor wie ArrayList nur synchronisiert
 		k.setKdnr(UUID.randomUUID());
+		while(database.containsKey(k)) {
+			k.setKdnr(UUID.randomUUID());
+		}
 		database.put(k, Collections.synchronizedList(new ArrayList<Ablesung>()));
 		System.out.println(k);
 		return k;
