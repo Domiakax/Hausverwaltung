@@ -19,10 +19,12 @@ public class Datastore {
 	private static final ObjectMapper mapper = new ObjectMapper();
 	private static final Path filePath = Paths.get("src", "main", "resources", "database.json");
 	private static final SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
+	private static long lastWrite;
 	
 	public static Datastore getDataStore() {
 		if(datastore == null) {
 			datastore = new Datastore();
+			lastWrite = 0;
 		}
 		return datastore;
 	}
@@ -39,6 +41,15 @@ public class Datastore {
 		return k;
 	}
 	
+	public boolean modifyKunde(Kunde toUpdate) {
+		List<Ablesung> ablesungen = database.remove(toUpdate);
+		if(ablesungen == null) {
+			return false;
+		}
+		database.put(toUpdate, ablesungen);
+		return true;
+	}
+	
 	public boolean postAblesung(Ablesung a) {
 		Kunde k = a.getKunde();
 		if(!database.containsKey(k)){
@@ -47,6 +58,7 @@ public class Datastore {
 		List<Ablesung> ablesungen = database.get(k);
 		ablesungen.add(a);
 		saveToFile();
+		lastWrite = System.currentTimeMillis();
 		return true;
 	}
 	
@@ -61,6 +73,7 @@ public class Datastore {
 			if(toUpdate.equals(a)) {
 				toUpdate.updateAblesung(a);
 				updated = true;
+				lastWrite = System.currentTimeMillis();
 			}
 		}
 		return updated;

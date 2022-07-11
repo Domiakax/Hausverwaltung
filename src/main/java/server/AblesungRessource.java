@@ -3,7 +3,6 @@ package server;
 import java.util.Date;
 
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -16,7 +15,6 @@ import jakarta.ws.rs.core.Response;
 @Path("ablesung")
 public class AblesungRessource {
 	
-	private long lastWritten;
 	
 	@Path("hello")
 	@GET
@@ -56,13 +54,16 @@ public class AblesungRessource {
 		return ResponseBuilder.ablesungNotCreated();
 	}
 	
-//	@POST
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Path("modifyAblesung")
-//	public Response modifyExistingAblesung(Ablesung a) {
-//		List<Ablesung> ablesungen = Datastore.getDataStore().
-//	}
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("modifyAblesung")
+	public Response modifyExistingAblesung(Ablesung a) {
+		if(Datastore.getDataStore().modifyExistingAblesung(a)) {
+			return ResponseBuilder.ablesungModified();
+		}
+		return ResponseBuilder.ablesungNotModified();
+	}
 	
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
@@ -72,6 +73,17 @@ public class AblesungRessource {
 		Datastore.getDataStore().addNewKunde(k);
 		System.out.println("Kunde angelegt");
 		return ResponseBuilder.kundeCreated(k);
+	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("modifyKunde")
+	public Response modifyKunde(Kunde toUpdate) {
+		if(Datastore.getDataStore().modifyKunde(toUpdate)) {
+			return ResponseBuilder.kundeModified();
+		}
+		return ResponseBuilder.kundeNotModified();
 	}
 	
 //	//ToDo
