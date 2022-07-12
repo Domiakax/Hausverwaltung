@@ -17,6 +17,7 @@ public class Datastore {
 	
 	private static Datastore datastore = null;
 	private static ConcurrentHashMap<Kunde, List<Ablesung>> database;
+	private static ConcurrentHashMap<UUID, Kunde> database_kunde;
 	private static final ObjectMapper mapper = new ObjectMapper();
 	private static final Path filePath = Paths.get("src", "main", "resources", "database.json");
 	private static final SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
@@ -32,6 +33,7 @@ public class Datastore {
 	
 	private Datastore() {
 		database = new ConcurrentHashMap<>();
+		database_kunde = new ConcurrentHashMap<>();
 		loadFromFile();
 	}
 	
@@ -42,6 +44,7 @@ public class Datastore {
 			k.setKdnr(UUID.randomUUID());
 		}
 		database.put(k, Collections.synchronizedList(new ArrayList<Ablesung>()));
+		database_kunde.put(k.getKdnr(), k);
 		System.out.println(k);
 		return k;
 	}
@@ -49,9 +52,7 @@ public class Datastore {
 	public Kunde getKunde(String id) {
 		try {
 			UUID uuid = UUID.fromString(id);
-			Kunde toSearch = new Kunde();
-			toSearch.setKdnr(uuid);
-			database.keySet().
+			return database_kunde.get(uuid);
 		}catch (Exception e) {
 			return null;
 		}

@@ -81,7 +81,11 @@ public class AblesungRessource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("getKunde/{id}")
 	public Response getKunde(@PathParam("id") String id) {
-		
+		Kunde toSearch = Datastore.getDataStore().getKunde(id);
+		if(toSearch == null) {
+			return ResponseBuilder.kundeNotFound();
+		}
+		return ResponseBuilder.kundeFound(toSearch);
 	}
 	
 	@PUT
@@ -92,7 +96,7 @@ public class AblesungRessource {
 		if(Datastore.getDataStore().modifyKunde(toUpdate)) {
 			return ResponseBuilder.kundeModified();
 		}
-		return ResponseBuilder.kundeNotModified();
+		return ResponseBuilder.kundeNotFound();
 	}
 	
 	@DELETE
