@@ -67,7 +67,7 @@ public class AblesungRessource {
 		return ResponseBuilder.ablesungNotModified();
 	}
 	
-	@PUT
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("neuerKunde")
@@ -77,7 +77,14 @@ public class AblesungRessource {
 		return ResponseBuilder.kundeCreated(k);
 	}
 	
-	@POST
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("getKunde/{id}")
+	public Response getKunde(@PathParam("id") String id) {
+		
+	}
+	
+	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("modifyKunde")

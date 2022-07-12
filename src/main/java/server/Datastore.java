@@ -46,6 +46,17 @@ public class Datastore {
 		return k;
 	}
 	
+	public Kunde getKunde(String id) {
+		try {
+			UUID uuid = UUID.fromString(id);
+			Kunde toSearch = new Kunde();
+			toSearch.setKdnr(uuid);
+			database.keySet().
+		}catch (Exception e) {
+			return null;
+		}
+	}
+	
 	public boolean modifyKunde(Kunde toUpdate) {
 		List<Ablesung> ablesungen = database.remove(toUpdate);
 		if(ablesungen == null) {
@@ -60,9 +71,9 @@ public class Datastore {
 			UUID uuid = UUID.fromString(id);
 			Kunde toSearch = new Kunde();
 			toSearch.setKdnr(uuid);
-			List<Ablesung> ablesungen = database.get(toSearch);
+			List<Ablesung> ablesungen = database.remove(toSearch);
 			return ablesungen;
-		}catch (IllegalArgumentException e) {
+		}catch (Exception e) {
 			return null;
 		}
 	}
@@ -97,6 +108,10 @@ public class Datastore {
 //		}
 		saveToFile();
 		return updated;
+	}
+	
+	public long getLastWrite() {
+		return lastWrite;
 	}
 	
 	private synchronized void updateAblesung(Ablesung x, Ablesung a, Boolean updated) {
