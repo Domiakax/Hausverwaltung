@@ -1,6 +1,5 @@
 package server;
 
-import java.util.Date;
 import java.util.List;
 
 import jakarta.ws.rs.Consumes;
@@ -36,12 +35,12 @@ public class AblesungRessource {
 //	}
 	
 	// To DO
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/ablesungen/{id}/startdatum/{beginn}/enddatum/{ende}")
-	public String getAblesung(@PathParam("id") int id, @PathParam("beginn") Date beginn, @PathParam("ende") Date ende) {
-		return null;
-	}
+//	@GET
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Path("/ablesungen/{id}/startdatum/{beginn}/enddatum/{ende}")
+//	public String getAblesung(@PathParam("id") int id, @PathParam("beginn") Date beginn, @PathParam("ende") Date ende) {
+//		return null;
+//	}
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -77,6 +76,7 @@ public class AblesungRessource {
 		return ResponseBuilder.kundeCreated(k);
 	}
 	
+	//Get alle kunden ToDo
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("getKunde/{id}")
@@ -87,6 +87,9 @@ public class AblesungRessource {
 		}
 		return ResponseBuilder.kundeFound(toSearch);
 	}
+	
+	//GET alle Ablesungen 
+	//GET lastwrite
 	
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)

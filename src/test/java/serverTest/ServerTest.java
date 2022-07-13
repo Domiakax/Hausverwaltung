@@ -33,6 +33,7 @@ class ServerTest {
 		final ResourceConfig rc = new ResourceConfig().register(AblesungRessource.class);
 		final HttpServer server =
 				JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
+		
 		System.out.println("Server Ready");
 		
 	}
