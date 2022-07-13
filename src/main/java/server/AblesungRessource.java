@@ -111,14 +111,14 @@ public class AblesungRessource {
 	}
 	
 	//ToDo
-	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("deletAblesung/{id}")
-	public Response deleteAblesung(Ablesung a) {
-		if(Datastore.getDataStore().deleteAblesung(a)) {
-			return ResponseBuilder.ablesungDeleted();
-		}
-		return null;
-	}
+//	@DELETE
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Path("deletAblesung/{id}")
+//	public Response deleteAblesung(Ablesung a) {
+//		if(Datastore.getDataStore().deleteAblesung(a)) {
+//			return ResponseBuilder.ablesungDeleted();
+//		}
+//		return null;
+//	}
 	
 }

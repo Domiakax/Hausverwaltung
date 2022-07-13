@@ -23,11 +23,11 @@ public class Main {
 		Kunde k = new Kunde("Huber", "Hans");
 //		System.out.println(Entity.entity(k, MediaType.APPLICATION_JSON));
 		 Response b =
-		target.path("neuerKunde").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).put(Entity.entity(k, MediaType.APPLICATION_JSON));
+		target.path("neuerKunde").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(k, MediaType.APPLICATION_JSON));
 		System.out.println(b.readEntity(String.class));
 		
 		target = client.target("http://localhost:8080/test/ablesung");
-		k.setKdnr(1);
+//		k.setKdnr(1);
 		Ablesung a = new Ablesung("1a", new Date(System.currentTimeMillis()),k, "test", false, 0);
 //		System.out.println(Entity.entity(a, MediaType.APPLICATION_JSON));
 		Response c =
