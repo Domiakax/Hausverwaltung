@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -26,10 +27,11 @@ class ServerTest {
 	private static final String url = "http://localhost:8080/test";
 	private static final Client client = ClientBuilder.newClient();
 	private WebTarget target = client.target(url);
-	
+	private static ArrayList<Kunde> kunden;
 	
 	@BeforeAll
 	static void setUp() {
+		setUpKundenList();
 		final ResourceConfig rc = new ResourceConfig().register(AblesungRessource.class);
 		final HttpServer server =
 				JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
@@ -38,18 +40,29 @@ class ServerTest {
 		
 	}
 	
+	private static void setUpKundenList() {
+		kunden = new ArrayList<>();
+		Kunde k1 = new Kunde("A", "a");
+		Kunde k2 = new Kunde("B", "b");
+		Kunde k3 = new Kunde("C", "c");
+		kunden.add(k1);
+		kunden.add(k2);
+		kunden.add(k3);
+	}
+
 	@BeforeEach
 	void resetClient() {
 		target = client.target("http://localhost:8080/test/ablesung");
 	}
 
 	@Test
-	void addNewKunde() {
-		Kunde neu = new Kunde("Huber", "Hans");
-		Response response = postNeuerKunde(neu);
-		assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-		Kunde kResponse = response.readEntity(Kunde.class);
-		assertNotNull(kResponse.getKdnr());
+	void addNewKunden() {
+		for(Kunde k : kunden) {
+			Response response = postNeuerKunde(k);
+			assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+			Kunde kResponse = response.readEntity(Kunde.class);
+			assertNotNull(kResponse.getKdnr());
+		}
 	}
 	
 	@Test
@@ -61,8 +74,8 @@ class ServerTest {
 		return  target.path("neuerKunde").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(k, MediaType.APPLICATION_JSON));
 	}
 	
-	private Response () {
-		
-	}
+//	private Response () {
+//		
+//	}
 
 }

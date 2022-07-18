@@ -54,6 +54,10 @@ public class ResponseBuilder {
 		return Response.status(Response.Status.OK).entity(createMessageResponseObject(Messages.ABLESUNG_DELETED)).build();
 	}
 	
+	public static Response getLastWrite(long lastWrite) {
+		return Response.status(Response.Status.OK).entity(lastWrite).build();
+	}
+	
 	private static JSONObject createMessageResponseObject(Messages message) {
 		return new JSONObject().put("message", message.toString());
 	}

@@ -91,6 +91,8 @@ public class AblesungRessource {
 	//GET alle Ablesungen 
 	//GET lastwrite
 	
+	
+	
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -111,6 +113,12 @@ public class AblesungRessource {
 			return ResponseBuilder.kundeNotDeleted();
 		}
 		return ResponseBuilder.kundeDeleted(ablesungen);
+	}
+	
+	@GET
+	@Path("getLastWrite")
+	public Response getLastWrite() {
+		return ResponseBuilder.getLastWrite(Datastore.getDataStore().getLastWrite());
 	}
 	
 	//ToDo
