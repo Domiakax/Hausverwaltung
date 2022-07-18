@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -113,6 +114,10 @@ public class Datastore {
 	
 	public long getLastWrite() {
 		return lastWrite;
+	}
+	
+	public List<Kunde> getCopyOfEveryKunde(){
+		return new ArrayList<Kunde>(database.keySet());
 	}
 	
 	private synchronized void updateAblesung(Ablesung x, Ablesung a, Boolean updated) {

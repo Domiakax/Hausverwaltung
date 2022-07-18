@@ -79,6 +79,14 @@ public class AblesungRessource {
 	//Get alle kunden ToDo
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@Path("getEveryKunde")
+	public Response getEveryKunde() {
+		
+	}
+	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("getKunde/{id}")
 	public Response getKunde(@PathParam("id") String id) {
 		Kunde toSearch = Datastore.getDataStore().getKunde(id);
