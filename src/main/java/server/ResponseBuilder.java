@@ -58,6 +58,10 @@ public class ResponseBuilder {
 		return Response.status(Response.Status.OK).entity(lastWrite).build();
 	}
 	
+	public static Response getEveryKunde(List<Kunde> kunden) {
+		return Response.status(Response.Status.OK).entity(kunden).build();
+	}
+	
 	private static JSONObject createMessageResponseObject(Messages message) {
 		return new JSONObject().put("message", message.toString());
 	}

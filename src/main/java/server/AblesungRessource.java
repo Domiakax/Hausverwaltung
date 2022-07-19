@@ -76,12 +76,11 @@ public class AblesungRessource {
 		return ResponseBuilder.kundeCreated(k);
 	}
 	
-	//Get alle kunden ToDo
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("getEveryKunde")
 	public Response getEveryKunde() {
-		
+		return ResponseBuilder.getEveryKunde(Datastore.getDataStore().getCopyOfEveryKunde());
 	}
 	
 	
@@ -97,9 +96,6 @@ public class AblesungRessource {
 	}
 	
 	//GET alle Ablesungen 
-	//GET lastwrite
-	
-	
 	
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
@@ -125,6 +121,7 @@ public class AblesungRessource {
 	
 	@GET
 	@Path("getLastWrite")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getLastWrite() {
 		return ResponseBuilder.getLastWrite(Datastore.getDataStore().getLastWrite());
 	}

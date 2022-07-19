@@ -2,6 +2,8 @@ package client;
 
 import java.util.Date;
 
+import org.json.JSONObject;
+
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -24,7 +26,10 @@ public class Main {
 //		System.out.println(Entity.entity(k, MediaType.APPLICATION_JSON));
 		 Response b =
 		target.path("neuerKunde").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(k, MediaType.APPLICATION_JSON));
-		System.out.println(b.readEntity(String.class));
+		 Kunde s = b.readEntity(Kunde.class);
+//		System.out.println(b.readEntity(String.class));
+		JSONObject obj = new JSONObject(s);
+		System.out.println(obj);
 		
 		target = client.target("http://localhost:8080/test/ablesung");
 //		k.setKdnr(1);
@@ -32,6 +37,11 @@ public class Main {
 //		System.out.println(Entity.entity(a, MediaType.APPLICATION_JSON));
 		Response c =
 				target.path("postAblesung").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(a, MediaType.APPLICATION_JSON));
-		System.out.println(c);
+		System.out.println(c.readEntity(String.class));
+		
+		target = client.target("http://localhost:8080/test/ablesung");
+		Response d = target.path("getLastWrite").request(MediaType.APPLICATION_JSON).get();
+		System.out.println(d);
+		System.out.println(d.readEntity(Long.class));
 	}
 }
