@@ -126,6 +126,13 @@ public class AblesungRessource {
 		return ResponseBuilder.getLastWrite(Datastore.getDataStore().getLastWrite());
 	}
 	
+	@GET
+	@Path("getEveryAblesung/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getEveryAblesung(@PathParam("id") String id) {
+		
+	}
+	
 	//ToDo
 //	@DELETE
 //	@Produces(MediaType.APPLICATION_JSON)

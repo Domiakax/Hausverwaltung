@@ -1,5 +1,6 @@
 package client;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.json.JSONObject;
@@ -33,7 +34,7 @@ public class Main {
 		
 		target = client.target("http://localhost:8080/test/ablesung");
 //		k.setKdnr(1);
-		Ablesung a = new Ablesung("1a", new Date(System.currentTimeMillis()),k, "test", false, 0);
+		Ablesung a = new Ablesung("1a", new Date(System.currentTimeMillis()),s, "test", false, 0);
 //		System.out.println(Entity.entity(a, MediaType.APPLICATION_JSON));
 		Response c =
 				target.path("postAblesung").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(a, MediaType.APPLICATION_JSON));

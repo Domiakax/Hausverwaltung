@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -110,6 +111,11 @@ public class Datastore {
 		saveToFile();
 		return updated;
 	}
+	private synchronized void updateAblesung(Ablesung x, Ablesung a, Boolean updated) {
+		x.updateAblesung(a);
+		updated = true;
+		aktualisiereLastWrite();
+	}
 	
 	public long getLastWrite() {
 		return lastWrite;
@@ -119,14 +125,29 @@ public class Datastore {
 		return new ArrayList<Kunde>(database.keySet());
 	}
 	
-	private synchronized void updateAblesung(Ablesung x, Ablesung a, Boolean updated) {
-		x.updateAblesung(a);
-		updated = true;
-		aktualisiereLastWrite();
-	}
 	
 	private void aktualisiereLastWrite() {
 		lastWrite = System.currentTimeMillis();
+	}
+	
+	/**
+	 * Von einem Kunden alle Ablesungen nach Datum sortiert
+	 * 
+	 * @param id
+	 * @return null, wenn Kunde nicht existiert
+	 */
+	public List<Ablesung> getEveryAblesung(String id) {
+		try {
+			UUID uuid = UUID.fromString(id);
+			Kunde toSearch = new Kunde();
+			toSearch.setKdnr(uuid); 
+			return database.get(toSearch).stream()
+					.sorted((a1,a2) -> a1.getDatum().compareTo(a2.getDatum()))
+					.collect(Collectors.toList());
+		}
+		catch(Exception e) {
+			return null;
+		}
 	}
 
 	private void saveToFile() {
