@@ -1,5 +1,10 @@
+
 package server;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.List;
 
 import jakarta.ws.rs.Consumes;
@@ -10,138 +15,139 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("ablesung")
+@Path("hausverwaltung")
 public class AblesungRessource {
 	
-	
-	@Path("hello")
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public String hello() {
-		System.out.println("anfrage");
-		return "hello world";
-	}
-	
-//	@Path("ablesungen")
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public Response getAblesungen(Kunde k) {
-////		List<Ablesung> ablesungen = Datastore.getDataStore().
-//		return Response.status(Response.Status.OK).entity(ablesungen).build();
-//	}
-	
-	// To DO
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Path("/ablesungen/{id}/startdatum/{beginn}/enddatum/{ende}")
-//	public String getAblesung(@PathParam("id") int id, @PathParam("beginn") Date beginn, @PathParam("ende") Date ende) {
-//		return null;
-//	}
+	private static final String endpointKunde = "kunden";
+	private static final String endpointAblesung = "ablesungen";
+	private static final DateTimeFormatter dateFormatter = 	DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("postAblesung")
-	public Response postAblesung(Ablesung a) {
-		Kunde k = a.getKunde();
-		System.out.println(k);
-		if(Datastore.getDataStore().postAblesung(a)) {
-			return ResponseBuilder.ablesungCreated();
+	@Path(endpointKunde)
+	public Response neuerKunde(Kunde k) {
+		if(k == null) {
+			return ResponseBuilder.badRequest();
 		}
-		return ResponseBuilder.ablesungNotCreated();
+		System.out.println("kunde angelegt");
+		System.out.println(k);
+		return Datastore.getDataStore().addNewKunde(k) == null ? ResponseBuilder.badRequest()
+				: ResponseBuilder.kundeCreated(k);
 	}
-	
+
+	@PUT
+	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(endpointKunde)
+	public Response updateKunde(Kunde toUpdate) {
+		return Datastore.getDataStore().modifyKunde(toUpdate) ? ResponseBuilder.kundeModified()
+				: ResponseBuilder.kundeNotFound();
+	}
+
 	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path(endpointAblesung)
+	public Response postAblesung(Ablesung a) {
+		if(a == null) {
+			return ResponseBuilder.badRequest();
+		}
+		Ablesung result = Datastore.getDataStore().postAblesung(a);
+		return result == null ? ResponseBuilder.ablesungNotCreated() : ResponseBuilder.ablesungCreated(result);
+	}
+
+	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("modifyAblesung")
 	public Response modifyExistingAblesung(Ablesung a) {
-		if(Datastore.getDataStore().modifyExistingAblesung(a)) {
-			return ResponseBuilder.ablesungModified();
-		}
-		return ResponseBuilder.ablesungNotModified();
+		return Datastore.getDataStore().modifyExistingAblesung(a) ? ResponseBuilder.ablesungModified()
+				: ResponseBuilder.ablesungNotModified();
 	}
-	
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("neuerKunde")
-	public Response neuerKunde(Kunde k) {
-		Datastore.getDataStore().addNewKunde(k);
-		System.out.println("Kunde angelegt");
-		return ResponseBuilder.kundeCreated(k);
-	}
-	
+	// Bis hier gecheckt
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("getEveryKunde")
+	@Path(endpointKunde)
 	public Response getEveryKunde() {
 		return ResponseBuilder.getEveryKunde(Datastore.getDataStore().getCopyOfEveryKunde());
 	}
-	
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("getKunde/{id}")
+	@Path(endpointKunde + "/{id}")
 	public Response getKunde(@PathParam("id") String id) {
 		Kunde toSearch = Datastore.getDataStore().getKunde(id);
-		if(toSearch == null) {
+		if (toSearch == null) {
 			return ResponseBuilder.kundeNotFound();
 		}
 		return ResponseBuilder.kundeFound(toSearch);
 	}
-	
-	//GET alle Ablesungen 
-	
-	@PUT
+
+	// GET alle Ablesungen
+
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("modifyKunde")
-	public Response modifyKunde(Kunde toUpdate) {
-		if(Datastore.getDataStore().modifyKunde(toUpdate)) {
-			return ResponseBuilder.kundeModified();
+	@Path("getEveryAblesungFromKunde/{kundeId}")
+	public Response getEveryAblesung(@PathParam("kundeId") String kundeId) {
+		List<Ablesung> results = Datastore.getDataStore().getEveryAblesung(kundeId);
+		return results == null ? ResponseBuilder.kundeNotFound() : null;
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path(endpointAblesung + "/{ablesungId}")
+	public Response getSingleAblesung(@PathParam("ablesungId") String ablesungId) {
+		System.out.println("Ablesung normal");
+		Ablesung toSearch = Datastore.getDataStore().getSingleAblesung(ablesungId);
+		return toSearch == null ? ResponseBuilder.ablesungNotFound() : ResponseBuilder.ablesungFound(toSearch);
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path(endpointAblesung)
+	public Response getAblesungenFromKunde(@QueryParam("kunde") String kid, @QueryParam("beginn") String beginn, @QueryParam("ende") String ende) {
+		try {
+			LocalDate dateBeginn = LocalDate.parse(beginn, dateFormatter);
+			LocalDate dateEnde = LocalDate.parse(ende, dateFormatter);
+			System.out.println("Ablesung with Query");
+			return null;
+		} catch(DateTimeParseException e) {
+			return null;
 		}
-		return ResponseBuilder.kundeNotFound();
+	}
+
+
+	@GET
+	@Path("getLastWrite/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getLastWrite(@PathParam("id") String id) {
+		return ResponseBuilder.getLastWrite(Datastore.getDataStore().getLastWrite(id));
+	}
+
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("deleteAblesung/{id}")
+	public Response deleteAblesung(@PathParam("id") String id) {
+		try {
+			Ablesung a = Datastore.getDataStore().deleteAblesung(id);
+			return a == null ? ResponseBuilder.ablesungNotFound() : ResponseBuilder.ablesungDeleted(a);
+		} catch (Exception e) {
+			return ResponseBuilder.badRequest();
+		}
 	}
 	
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("deleteKunde/{id}")
 	public Response deleteKunde(@PathParam("id") String id) {
-		List<Ablesung> ablesungen = Datastore.getDataStore().deleteKunde(id);
-		if(ablesungen == null) {
-			return ResponseBuilder.kundeNotDeleted();
-		}
-		return ResponseBuilder.kundeDeleted(ablesungen);
+		HashMap<Kunde, List<Ablesung>> storedInformation = Datastore.getDataStore().deleteKunde(id);
+		return storedInformation == null ? ResponseBuilder.kundeNotDeleted() : ResponseBuilder.kundeDeleted(storedInformation);
 	}
-	
-	@GET
-	@Path("getLastWrite")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getLastWrite() {
-		return ResponseBuilder.getLastWrite(Datastore.getDataStore().getLastWrite());
-	}
-	
-	@GET
-	@Path("getEveryAblesung/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEveryAblesung(@PathParam("id") String id) {
-		
-	}
-	
-	//ToDo
-//	@DELETE
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Path("deletAblesung/{id}")
-//	public Response deleteAblesung(Ablesung a) {
-//		if(Datastore.getDataStore().deleteAblesung(a)) {
-//			return ResponseBuilder.ablesungDeleted();
-//		}
-//		return null;
-//	}
-	
-}
+
+}	
