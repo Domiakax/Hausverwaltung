@@ -9,6 +9,7 @@ import java.util.List;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -62,9 +63,9 @@ public class AblesungRessource {
 	}
 
 	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("modifyAblesung")
+	@Path(endpointAblesung)
 	public Response modifyExistingAblesung(Ablesung a) {
 		return Datastore.getDataStore().modifyExistingAblesung(a) ? ResponseBuilder.ablesungModified()
 				: ResponseBuilder.ablesungNotModified();
@@ -113,9 +114,14 @@ public class AblesungRessource {
 	@Path(endpointAblesung)
 	public Response getAblesungenFromKunde(@QueryParam("kunde") String kid, @QueryParam("beginn") String beginn, @QueryParam("ende") String ende) {
 		try {
-			LocalDate dateBeginn = LocalDate.parse(beginn, dateFormatter);
-			LocalDate dateEnde = LocalDate.parse(ende, dateFormatter);
+			if(kid == null) {
+				
+			}
 			System.out.println("Ablesung with Query");
+//			LocalDate dateBeginn = LocalDate.parse(beginn, dateFormatter);
+//			LocalDate dateEnde = LocalDate.parse(ende, dateFormatter);
+			System.out.println(kid);
+			System.out.println(beginn);
 			return null;
 		} catch(DateTimeParseException e) {
 			return null;
@@ -132,7 +138,7 @@ public class AblesungRessource {
 
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("deleteAblesung/{id}")
+	@Path(endpointAblesung+"/{id}")
 	public Response deleteAblesung(@PathParam("id") String id) {
 		try {
 			Ablesung a = Datastore.getDataStore().deleteAblesung(id);

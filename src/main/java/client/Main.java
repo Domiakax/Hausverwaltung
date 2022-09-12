@@ -1,5 +1,6 @@
 package client;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +44,7 @@ public class Main {
 		
 		target = client.target("http://localhost:8080/test/hasuverwaltung");
 //		k.setKdnr(1);
-		Ablesung a = new Ablesung("1a", new Date(System.currentTimeMillis()),s, "test", false, 0);
+		Ablesung a = new Ablesung("1a", LocalDate.now(),s, "test", false, 0);
 //		System.out.println(Entity.entity(a, MediaType.APPLICATION_JSON));
 		Response c =
 				target.path("postAblesung").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(a, MediaType.APPLICATION_JSON));
@@ -55,9 +56,9 @@ public class Main {
 		System.out.println(d);
 		System.out.println(d.readEntity(String.class));
 		
-//		target = client.target("http://localhost:8080/test/hausverwaltung");
-//		Response neueResponse = target.path("getSingleAblesung").queryParam("kunde", "bla").request(MediaType.APPLICATION_JSON).get();
-//		System.out.println(neueResponse.toString());
-//		System.out.println(neueResponse.getStatus());
+		target = client.target("http://localhost:8080/test/hausverwaltung");
+		Response neueResponse = target.path("ablesungen").queryParam("beginn", LocalDate.now()).request(MediaType.APPLICATION_JSON).get();
+		System.out.println(neueResponse.toString());
+		System.out.println(neueResponse.getStatus());
 	}
 }

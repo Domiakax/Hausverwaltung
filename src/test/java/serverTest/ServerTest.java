@@ -163,7 +163,7 @@ class ServerTest {
 	}
 
 	private Response postNeueAblesung(Ablesung a) {
-		return target.path("postAblesung").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+		return target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.post(Entity.entity(a, MediaType.APPLICATION_JSON));
 	}
 
@@ -171,8 +171,7 @@ class ServerTest {
 	void t08_createAblesungForNotExistingKundeFails() {
 		LocalDate now = LocalDate.now();
 		Ablesung a = new Ablesung("1", now, null, "test", false, 0);
-		Response re = target.path("postAblesung").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(a, MediaType.APPLICATION_JSON));
+		Response re = postNeueAblesung(a);
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		String response = re.readEntity(String.class);
 		assertFalse(response.isBlank());
@@ -183,21 +182,21 @@ class ServerTest {
 		Ablesung a = ablesungen.get(k1).get(0);
 		final int newZaehlerstand = a.getZaehlerstand() + 100;
 		a.setZaehlerstand(newZaehlerstand);
-		Response re = target.path("modifyAblesung").request(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON).put(Entity.entity(a, MediaType.APPLICATION_JSON));
+		Response re = target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON)
+				.accept(MediaType.TEXT_PLAIN).put(Entity.entity(a, MediaType.APPLICATION_JSON));
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		resetClient();
-		Response re2 = target.path("getSingleAblesung/".concat(a.getId().toString())).request().accept(MediaType.APPLICATION_JSON).get();
+		Response re2 = target.path(endpointAblesungen.concat("/").concat(a.getId().toString())).request().accept(MediaType.APPLICATION_JSON).get();
 		Ablesung result = re2.readEntity(Ablesung.class);
 		assertEquals(a.getZaehlerstand(), result.getZaehlerstand());
 	}
 	
 	@Test
-	void t10_modifyExistingAblesungFails() {
+	void t10_modifyNotExistingAblesungFails() {
 		Ablesung a = new Ablesung();
 		a.setId(null);
-		Response re = target.path("modifyAblesung").request(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON).put(Entity.entity(a, MediaType.APPLICATION_JSON));
+		Response re = target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON)
+				.accept(MediaType.TEXT_PLAIN).put(Entity.entity(a, MediaType.APPLICATION_JSON));
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());
 	}
@@ -205,14 +204,19 @@ class ServerTest {
 	@Test
 	void t11_deleteAblesung() {
 		Ablesung stored = ablesungen.get(k1).remove(0);
-		Response re = target.path("deleteAblesung/".concat(stored.getId().toString())).request().accept(MediaType.APPLICATION_JSON).delete();
+		String aid = stored.getId().toString();
+		Response re = target.path(endpointAblesungen.concat("/").concat(aid)).request().accept(MediaType.APPLICATION_JSON).delete();
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
-		//ToDo 
+		Ablesung result = re.readEntity(Ablesung.class);
+		assertEquals(stored, result);
+		re = target.path(endpointAblesungen.concat("/").concat(stored.getId().toString())).request().accept(MediaType.APPLICATION_JSON).get();
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
+		assertFalse(re.readEntity(String.class).isBlank());
 	}
 	
 	@Test
 	void t12_deleteAblesungFailsForNoneExistingAblesung() {
-		Response re = target.path("deleteAblesung/null").request().accept(MediaType.APPLICATION_JSON).delete();
+		Response re = target.path(endpointAblesungen.concat("/null")).request().accept(MediaType.APPLICATION_JSON).delete();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());
 	}

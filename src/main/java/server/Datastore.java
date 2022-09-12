@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +26,6 @@ public class Datastore {
 	private static ConcurrentHashMap<UUID, Ablesung> database_ablesung;
 	private static final ObjectMapper mapper = new ObjectMapper();
 	private static final Path filePath = Paths.get("src", "main", "resources", "database.json");
-	private static final SimpleDateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
 	private static ConcurrentHashMap<UUID, Long> lastWrite;
 	private static List<Ablesung> deletedAblesungen;
 
@@ -161,22 +161,6 @@ public class Datastore {
 		lastWrite.put(kid, System.currentTimeMillis());
 	}
 
-	/**
-	 * Von einem Kunden alle Ablesungen nach Datum sortiert
-	 * 
-	 * @param id
-	 * @return null, wenn Kunde nicht existiert
-	 */
-	public List<Ablesung> getEveryAblesung(String id) {
-		try {
-			UUID kid = UUID.fromString(id);
-			return database_kundeToAblesung.get(kid).stream().sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum()))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
 	public Ablesung deleteAblesung(String id) {
 		try {
 			UUID aid = UUID.fromString(id);
@@ -184,8 +168,8 @@ public class Datastore {
 			if (a == null) {
 				return null;
 			}
-			Kunde k = a.getKunde();
-			database_kundeToAblesung.get(k).remove(a);
+			UUID kid = a.getKunde().getKdnr();
+			database_kundeToAblesung.get(kid).remove(a);
 			return a;
 		} catch (IllegalArgumentException e) {
 			return null;
@@ -193,17 +177,17 @@ public class Datastore {
 	}
 
 	private void saveToFile() {
-		System.out.println(filePath);
-		File file = filePath.toFile();
-		System.out.println(file.exists());
-		System.out.println(file.getAbsolutePath());
-		try {
-			mapper.setDateFormat(dateformat);
-			mapper.writeValue(file, database_kundeToAblesung);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		System.out.println(filePath);
+//		File file = filePath.toFile();
+//		System.out.println(file.exists());
+//		System.out.println(file.getAbsolutePath());
+//		try {
+//			mapper.setDateFormat(dateformat);
+//			mapper.writeValue(file, database_kundeToAblesung);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	private void loadFromFile() {
@@ -247,6 +231,43 @@ public class Datastore {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public List<Ablesung> getAblesungenFromKunde(String id) {
+		try {
+			UUID kid = UUID.fromString(id);
+			return database_kundeToAblesung.get(kid).stream().sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum()))
+					.collect(Collectors.toList());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<Ablesung> getAblesungenFromKunde(String id, LocalDate beginn) {
+		try {
+			UUID kid = UUID.fromString(id);
+			return database_kundeToAblesung.get(kid).stream().filter(x -> x.getDatum().isAfter(beginn))
+					.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<Ablesung> getAblesungenFromKunde(String id, LocalDate beginn, LocalDate ende) {
+		try {
+			UUID kid = UUID.fromString(id);
+			return database_kundeToAblesung.get(kid).stream()
+					.filter(x -> x.getDatum().isAfter(beginn) && x.getDatum().isBefore(ende))
+					.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<Ablesung> getAblesungen(LocalDate beginn, LocalDate ende) {
+		return database_ablesung.values().stream()
+				.filter(x -> x.getDatum().isAfter(beginn) && x.getDatum().isBefore(ende))
+				.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 	}
 
 }
