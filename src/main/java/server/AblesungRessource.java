@@ -114,12 +114,31 @@ public class AblesungRessource {
 	@Path(endpointAblesung)
 	public Response getAblesungenFromKunde(@QueryParam("kunde") String kid, @QueryParam("beginn") String beginn, @QueryParam("ende") String ende) {
 		try {
-			if(kid == null) {
-				
+			LocalDate dateEnde;
+			if (ende == null) {
+				dateEnde = LocalDate.now();
+			}
+			else {
+				dateEnde = LocalDate.parse(ende, dateFormatter);
+			}
+			List<Ablesung> result;
+			if (beginn == null) {
+				if(kid == null) {
+					result = Datastore.getDataStore().get
+				}
+				result = Datastore.getDataStore().getAblesungenFromKundeUntil(kid, dateEnde);
+				return 
+			}
+			else {
+				LocalDate dateBeginn = LocalDate.parse(beginn, dateFormatter);
+				if(kid == null) {
+					result = Datastore.getDataStore().getAblesungen(dateBeginn, dateEnde);
+					return
+				}
+				result = Datastore.getDataStore().getAblesungenFromKunde(kid, dateBeginn, dateEnde);
+				return
 			}
 			System.out.println("Ablesung with Query");
-//			LocalDate dateBeginn = LocalDate.parse(beginn, dateFormatter);
-//			LocalDate dateEnde = LocalDate.parse(ende, dateFormatter);
 			System.out.println(kid);
 			System.out.println(beginn);
 			return null;

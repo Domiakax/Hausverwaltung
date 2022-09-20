@@ -243,7 +243,7 @@ public class Datastore {
 		}
 	}
 
-	public List<Ablesung> getAblesungenFromKunde(String id, LocalDate beginn) {
+	public List<Ablesung> getAblesungenFromKundeSince(String id, LocalDate beginn) {
 		try {
 			UUID kid = UUID.fromString(id);
 			return database_kundeToAblesung.get(kid).stream().filter(x -> x.getDatum().isAfter(beginn))
@@ -251,6 +251,10 @@ public class Datastore {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	public List<Ablesung> getAblesungenFromKundeUntil(String id, LocalDate ende){
+		
 	}
 
 	public List<Ablesung> getAblesungenFromKunde(String id, LocalDate beginn, LocalDate ende) {
