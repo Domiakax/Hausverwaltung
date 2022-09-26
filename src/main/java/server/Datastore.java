@@ -42,7 +42,9 @@ public class Datastore {
 		database_ablesung = new ConcurrentHashMap<UUID, Ablesung>();
 		lastWrite = new ConcurrentHashMap<UUID, Long>();
 		deletedAblesungen = Collections.synchronizedList(new ArrayList<>());
-//		loadFromFile();
+		if (Main.loadFromFile) {
+			// loadFromFile();
+		}
 	}
 
 	public Kunde addNewKunde(Kunde k) {
@@ -252,9 +254,15 @@ public class Datastore {
 			return null;
 		}
 	}
-	
-	public List<Ablesung> getAblesungenFromKundeUntil(String id, LocalDate ende){
-		
+
+	public List<Ablesung> getAblesungenFromKundeUntil(String id, LocalDate ende) {
+		try {
+			UUID kid = UUID.fromString(id);
+			return database_kundeToAblesung.get(kid).stream().filter(x -> x.getDatum().isBefore(ende))
+					.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public List<Ablesung> getAblesungenFromKunde(String id, LocalDate beginn, LocalDate ende) {
@@ -271,6 +279,16 @@ public class Datastore {
 	public List<Ablesung> getAblesungen(LocalDate beginn, LocalDate ende) {
 		return database_ablesung.values().stream()
 				.filter(x -> x.getDatum().isAfter(beginn) && x.getDatum().isBefore(ende))
+				.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
+	}
+
+	public List<Ablesung> getAblesungenSince(LocalDate beginn) {
+		return database_ablesung.values().stream().filter(x -> x.getDatum().isAfter(beginn))
+				.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
+	}
+
+	public List<Ablesung> getAblesungUntil(LocalDate end) {
+		return database_ablesung.values().stream().filter(x -> x.getDatum().isBefore(end))
 				.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 	}
 

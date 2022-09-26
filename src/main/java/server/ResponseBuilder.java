@@ -73,4 +73,12 @@ public class ResponseBuilder {
 		return Response.status(Response.Status.OK).entity(kunden).build();
 	}
 	
+	public static Response wrongDateFormat() {
+		return Response.status(Response.Status.BAD_REQUEST).build();
+	}
+	
+	public static Response getAblesungen(List<Ablesung> ablesungen) {
+		return Response.status(Response.Status.OK).entity(ablesungen).build();
+	}
+	
 }

@@ -3,6 +3,7 @@ package server;
 public enum Messages {
 	
 	BAD_REQUEST("Abfrage fehlerhaft aufgebaut"),
+	WRONG_DATE_FORMAT("Datum besitzt nicht das geforderte Format"),
 	KUNDE_MODIFIED("Kundeninformationen erfolgreich geändert"),
 	KUNDE_NOT_FOUND("Kunde wurde nicht gefunden"),
 	KUNDE_NOT_DELETED("Kunde konnte nicht gelöscht werden, da er nicht gefunden werden konnte"),
