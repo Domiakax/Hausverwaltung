@@ -74,7 +74,7 @@ public class ResponseBuilder {
 	}
 	
 	public static Response wrongDateFormat() {
-		return Response.status(Response.Status.BAD_REQUEST).build();
+		return Response.status(Response.Status.BAD_REQUEST).entity(Messages.WRONG_DATE_FORMAT.toString()).build();
 	}
 	
 	public static Response getAblesungen(List<Ablesung> ablesungen) {
