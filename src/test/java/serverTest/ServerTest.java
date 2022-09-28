@@ -7,7 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +51,7 @@ class ServerTest {
 
 	private static List<Kunde> kunden;
 	private static HashMap<Kunde, List<Ablesung>> ablesungen;
+	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	@BeforeAll
 	static void setUp() {
@@ -172,14 +175,24 @@ class ServerTest {
 	void t07_createAblesungForKunde() {
 		LocalDate d = LocalDate.of(2022, 8, 25);
 		Ablesung a1 = new Ablesung("1", d, k1, "test", false, 100);
-		Response re = postNeueAblesung(a1);
-		assertEquals(Response.Status.CREATED.getStatusCode(), re.getStatus());
-
-		Ablesung result = re.readEntity(Ablesung.class);
-		assertNotNull(result.getId());
-		List<Ablesung> k1Ablesungen = ablesungen.get(k1);
-		k1Ablesungen.add(result);
+		ablesungen.get(k1).add(a1);
+		Collection<List<Ablesung>> lists = ablesungen.values();
+		for(List<Ablesung> l : lists) {
+			for(Ablesung a : l) {
+				Response re = postNeueAblesung(a);
+				assertEquals(Response.Status.CREATED.getStatusCode(), re.getStatus());
+				
+				Ablesung result = re.readEntity(Ablesung.class);
+				assertNotNull(result.getId());
+				System.out.println("Ablesung :: " +a);
+				a.setId(result.getId());
+			}
+		}
+//		List<Ablesung> k1Ablesungen = ablesungen.get(k1);
+//		k1Ablesungen.add(result);
 	}
+
+	
 
 	private Response postNeueAblesung(Ablesung a) {
 		return target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
@@ -260,8 +273,11 @@ class ServerTest {
 		LocalDate ende = LocalDate.of(2021, 9, 1);
 		List<Ablesung> filter = ablesungen.get(k2_RangeTest).stream()
 				.filter(x -> x.getDatum().isAfter(beginn) && x.getDatum().isBefore(ende)).collect(Collectors.toList());
-		Response re = target.path(endpointAblesungen).queryParam("kunde", k2_RangeTest).queryParam("beginn", beginn)
-				.queryParam("ende", ende).request().accept(MediaType.APPLICATION_JSON).get();
+		String kid = k2_RangeTest.getKdnr().toString();
+		String beginnString = beginn.format(dateFormatter);
+		String endeString = ende.format(dateFormatter);
+		Response re = target.path(endpointAblesungen).queryParam("kunde", kid).queryParam("beginn", beginnString)
+				.queryParam("ende", endeString).request().accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		List<Ablesung> result = re.readEntity(new GenericType<List<Ablesung>>() {});
 		assertEquals(filter.size(), result.size());

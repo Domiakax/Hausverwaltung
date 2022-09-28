@@ -134,6 +134,7 @@ public class AblesungRessource {
 				}
 				result = Datastore.getDataStore().getAblesungenFromKunde(kid, dateBeginn, dateEnde);
 			}
+			System.out.println(result);
 
 			if (result == null) {
 				return ResponseBuilder.kundeNotFound();
