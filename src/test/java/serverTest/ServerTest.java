@@ -67,15 +67,14 @@ class ServerTest {
 		kunden.add(k1);
 		kunden.add(k2_RangeTest);
 		kunden.add(k3_RangeTest);
-		
-		
-//		setUpRangeTest erst mit Kunden ID möglich
+
+//		setUpRangeTest erst mit Kunden ID mï¿½glich
 //		setUpForRangeTest();
 	}
 
 	private static void setUpForRangeTest() {
 		ablesungen = new HashMap<>();
-		for(Kunde k : kunden) {
+		for (Kunde k : kunden) {
 			ablesungen.put(k, new ArrayList<>());
 		}
 		Ablesung a1 = new Ablesung("1", LocalDate.of(2021, 1, 1), k2_RangeTest, "test", false, 0);
@@ -177,22 +176,20 @@ class ServerTest {
 		Ablesung a1 = new Ablesung("1", d, k1, "test", false, 100);
 		ablesungen.get(k1).add(a1);
 		Collection<List<Ablesung>> lists = ablesungen.values();
-		for(List<Ablesung> l : lists) {
-			for(Ablesung a : l) {
+		for (List<Ablesung> l : lists) {
+			for (Ablesung a : l) {
 				Response re = postNeueAblesung(a);
 				assertEquals(Response.Status.CREATED.getStatusCode(), re.getStatus());
-				
+
 				Ablesung result = re.readEntity(Ablesung.class);
 				assertNotNull(result.getId());
-				System.out.println("Ablesung :: " +a);
+				System.out.println("Ablesung :: " + a);
 				a.setId(result.getId());
 			}
 		}
 //		List<Ablesung> k1Ablesungen = ablesungen.get(k1);
 //		k1Ablesungen.add(result);
 	}
-
-	
 
 	private Response postNeueAblesung(Ablesung a) {
 		return target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
@@ -212,7 +209,7 @@ class ServerTest {
 	@Test
 	void t09_modifyExistingAblesung() {
 		Ablesung a = ablesungen.get(k1).get(0);
-		System.out.println("HIER:: "  + a);
+		System.out.println("HIER:: " + a);
 		final int newZaehlerstand = a.getZaehlerstand() + 100;
 		a.setZaehlerstand(newZaehlerstand);
 		Response re = target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
@@ -279,12 +276,37 @@ class ServerTest {
 		Response re = target.path(endpointAblesungen).queryParam("kunde", kid).queryParam("beginn", beginnString)
 				.queryParam("ende", endeString).request().accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
-		List<Ablesung> result = re.readEntity(new GenericType<List<Ablesung>>() {});
+		List<Ablesung> result = re.readEntity(new GenericType<List<Ablesung>>() {
+		});
 		assertEquals(filter.size(), result.size());
-		for(Ablesung a : filter) {
+		for (Ablesung a : filter) {
 			assertTrue(result.contains(a));
 		}
 	}
+
+	@Test
+	void t15_getEveryAblesungSince() {
+		LocalDate beginn = LocalDate.of(2021, 2, 1);
+		List<Ablesung> result = new ArrayList<>();
+		for(List<Ablesung> toFilter : ablesungen.values()) {
+			for(Ablesung a : toFilter) {
+				if(a.getDatum().isAfter(beginn)) {
+					result.add(a);
+				}
+			}
+		}
+		String beginnString = beginn.format(dateFormatter);
+		Response re = target.path(endpointAblesungen).queryParam("beginn", beginnString)
+				.request().accept(MediaType.APPLICATION_JSON).get();
+		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
+		List<Ablesung> resultGot = re.readEntity(new GenericType<List<Ablesung>>() {
+		});
+		assertEquals(result.size(), resultGot.size());
+		for (Ablesung a : result) {
+			assertTrue(resultGot.contains(a));
+		}
+	}
+
 
 //	private Response () {
 //		
