@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -51,16 +52,23 @@ class ServerTest {
 
 	private static List<Kunde> kunden;
 	private static HashMap<Kunde, List<Ablesung>> ablesungen;
+	private static HttpServer server;
 	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+	
 	@BeforeAll
 	static void setUp() {
 		setUpKundenList();
 		final ResourceConfig rc = new ResourceConfig().register(AblesungRessource.class);
-		final HttpServer server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
-
+		server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
 		System.out.println("Server Ready");
 	}
+	
+	@AfterAll
+	static void shutDown(){
+		server.stop(0);
+	}
+	
 
 	private static void setUpKundenList() {
 		kunden = new ArrayList<>();
@@ -81,11 +89,18 @@ class ServerTest {
 		Ablesung a2 = new Ablesung("1", LocalDate.of(2021, 4, 1), k2_RangeTest, "test", false, 0);
 		Ablesung a3 = new Ablesung("1", LocalDate.of(2021, 8, 1), k2_RangeTest, "test", false, 0);
 		Ablesung a4 = new Ablesung("1", LocalDate.of(2021, 12, 1), k2_RangeTest, "test", false, 0);
+		Ablesung a5 = new Ablesung("1", LocalDate.of(2021, 1, 1), k3_RangeTest, "test", false, 0);
+		Ablesung a6 = new Ablesung("1", LocalDate.of(2021, 4, 1), k3_RangeTest, "test", false, 0);
+		Ablesung a7 = new Ablesung("1", LocalDate.of(2021, 8, 1), k3_RangeTest, "test", false, 0);
+		Ablesung a8 = new Ablesung("1", LocalDate.of(2021, 12, 1), k3_RangeTest, "test", false, 0);
 		ablesungen.get(k2_RangeTest).add(a1);
 		ablesungen.get(k2_RangeTest).add(a2);
 		ablesungen.get(k2_RangeTest).add(a3);
 		ablesungen.get(k2_RangeTest).add(a4);
-		System.out.println(ablesungen.get(k1).size());
+		ablesungen.get(k3_RangeTest).add(a5);
+		ablesungen.get(k3_RangeTest).add(a6);
+		ablesungen.get(k3_RangeTest).add(a7);
+		ablesungen.get(k3_RangeTest).add(a8);
 	}
 
 	@BeforeEach
@@ -167,7 +182,6 @@ class ServerTest {
 		Response re = target.path(endpointKunden).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
 				.put(Entity.entity(notInServer, MediaType.APPLICATION_JSON));
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
-		System.out.println(re.readEntity(String.class));
 	}
 
 	@Test
@@ -183,7 +197,6 @@ class ServerTest {
 
 				Ablesung result = re.readEntity(Ablesung.class);
 				assertNotNull(result.getId());
-				System.out.println("Ablesung :: " + a);
 				a.setId(result.getId());
 			}
 		}
@@ -209,7 +222,6 @@ class ServerTest {
 	@Test
 	void t09_modifyExistingAblesung() {
 		Ablesung a = ablesungen.get(k1).get(0);
-		System.out.println("HIER:: " + a);
 		final int newZaehlerstand = a.getZaehlerstand() + 100;
 		a.setZaehlerstand(newZaehlerstand);
 		Response re = target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
@@ -306,10 +318,28 @@ class ServerTest {
 			assertTrue(resultGot.contains(a));
 		}
 	}
-
-
-//	private Response () {
-//		
-//	}
+	
+	@Test
+	void t16_getEveryAblesungUntil() {
+		LocalDate ende = LocalDate.of(2021, 7, 1);
+		List<Ablesung> result = new ArrayList<>();
+		for(List<Ablesung> toFilter : ablesungen.values()) {
+			for(Ablesung a : toFilter) {
+				if(a.getDatum().isBefore(ende)) {
+					result.add(a);
+				}
+			}
+		}
+		String endeString = ende.format(dateFormatter);
+		Response re = target.path(endpointAblesungen).queryParam("ende", endeString)
+				.request().accept(MediaType.APPLICATION_JSON).get();
+		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
+		List<Ablesung> resultGot = re.readEntity(new GenericType<List<Ablesung>>() {
+		});
+		assertEquals(result.size(), resultGot.size());
+		for (Ablesung a : result) {
+			assertTrue(resultGot.contains(a));
+		}
+	}
 
 }

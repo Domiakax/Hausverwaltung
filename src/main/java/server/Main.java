@@ -32,6 +32,7 @@ public class Main {
 		final HttpServer server =
 				JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
 		System.out.println("Ready");
+		server.stop(0);
 	}
 
 }

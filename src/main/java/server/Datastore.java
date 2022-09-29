@@ -21,12 +21,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Datastore {
 
 	private static Datastore datastore = null;
-	private static ConcurrentHashMap<UUID, List<Ablesung>> database_kundeToAblesung;
+	private static ConcurrentHashMap<Kunde, List<Ablesung>> database_kundeToAblesung;
 	private static ConcurrentHashMap<UUID, Kunde> database_kunde;
 	private static ConcurrentHashMap<UUID, Ablesung> database_ablesung;
 	private static final ObjectMapper mapper = new ObjectMapper();
-	private static final Path filePath = Paths.get("src", "main", "resources", "database.json");
-	private static ConcurrentHashMap<UUID, Long> lastWrite;
+	private static final Path filePathKunden = Paths.get("src", "main", "resources", "kunden.json");
+//	private static ConcurrentHashMap<UUID, Long> lastWrite;
 	private static List<Ablesung> deletedAblesungen;
 
 	public static Datastore getDataStore() {
@@ -40,10 +40,10 @@ public class Datastore {
 		database_kundeToAblesung = new ConcurrentHashMap<>();
 		database_kunde = new ConcurrentHashMap<>();
 		database_ablesung = new ConcurrentHashMap<UUID, Ablesung>();
-		lastWrite = new ConcurrentHashMap<UUID, Long>();
+//		lastWrite = new ConcurrentHashMap<UUID, Long>();
 		deletedAblesungen = Collections.synchronizedList(new ArrayList<>());
 		if (Main.loadFromFile) {
-			// loadFromFile();
+			 loadFromFile();
 		}
 	}
 
@@ -51,9 +51,9 @@ public class Datastore {
 		// Vektor wie ArrayList nur synchronisiert
 		try {
 			saveKunde(k);
-			UUID kid = k.getKdnr();
-			database_kundeToAblesung.put(kid, Collections.synchronizedList(new ArrayList<Ablesung>()));
-			aktualisiereLastWrite(kid);
+//			UUID kid = k.getKdnr();
+			database_kundeToAblesung.put(k, Collections.synchronizedList(new ArrayList<Ablesung>()));
+//			aktualisiereLastWrite(kid);
 			return k;
 		} catch (NullPointerException e) {
 			return null;
@@ -95,7 +95,7 @@ public class Datastore {
 
 	public Ablesung postAblesung(Ablesung a) {
 		try {
-			UUID kid = a.getKunde().getKdnr();
+			Kunde kid = a.getKunde();
 			if (!database_kundeToAblesung.containsKey(kid)) {
 				return null;
 			}
@@ -124,13 +124,13 @@ public class Datastore {
 		try {
 			UUID toSearch = a.getId();
 			UUID kid = a.getKunde().getKdnr();
-			// Ungültiger Kunde
+			// UngÃ¼ltiger Kunde
 			if (!database_kunde.containsKey(kid)) {
 				return false;
 			}
 			Ablesung toUpdate = database_ablesung.get(toSearch);
 			toUpdate.updateAblesung(a);
-			// Call by Refernece ändert auch Objekt in anderer HashMap
+			// Call by Refernece Ã¤ndert auch Objekt in anderer HashMap
 			saveToFile();
 			aktualisiereLastWrite(kid);
 			return true;
@@ -178,7 +178,7 @@ public class Datastore {
 		}
 	}
 
-	private void saveToFile() {
+	public void saveToFile() {
 //		System.out.println(filePath);
 //		File file = filePath.toFile();
 //		System.out.println(file.exists());

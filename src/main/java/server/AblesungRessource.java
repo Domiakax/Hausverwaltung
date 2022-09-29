@@ -132,7 +132,9 @@ public class AblesungRessource {
 				if (kid == null) {
 					result = Datastore.getDataStore().getAblesungen(dateBeginn, dateEnde);
 				}
-				result = Datastore.getDataStore().getAblesungenFromKunde(kid, dateBeginn, dateEnde);
+				else {
+					result = Datastore.getDataStore().getAblesungenFromKunde(kid, dateBeginn, dateEnde);
+				}
 			}
 			System.out.println(result);
 
