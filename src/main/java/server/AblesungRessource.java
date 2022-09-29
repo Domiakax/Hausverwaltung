@@ -24,7 +24,7 @@ public class AblesungRessource {
 
 	private static final String endpointKunde = "kunden";
 	private static final String endpointAblesung = "ablesungen";
-	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)

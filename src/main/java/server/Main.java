@@ -15,6 +15,12 @@ public class Main {
 	public static final boolean loadFromFile = false; 
 	
 	public static void main(String[] args) {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				System.out.println("System was shutdown");
+			}
+		});
 		ObjectMapper mapper = new ObjectMapper();
 		Kunde k = new Kunde("a", "b");
 		Ablesung a = new Ablesung("a",  null, k,"b",false, 0);
@@ -32,7 +38,7 @@ public class Main {
 		final HttpServer server =
 				JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
 		System.out.println("Ready");
-		server.stop(0);
+//		server.stop(0);
 	}
 
 }

@@ -86,7 +86,7 @@ public class Datastore {
 				return false;
 			}
 			stored.updateKunde(toUpdate);
-			aktualisiereLastWrite(stored.getKdnr());
+//			aktualisiereLastWrite(stored.getKdnr());
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -104,7 +104,7 @@ public class Datastore {
 			List<Ablesung> ablesungen = database_kundeToAblesung.get(kid);
 			ablesungen.add(a);
 			saveToFile();
-			aktualisiereLastWrite(kid);
+//			aktualisiereLastWrite(kid);
 			return a;
 		} catch (NullPointerException e) {
 			return null;
@@ -132,21 +132,21 @@ public class Datastore {
 			toUpdate.updateAblesung(a);
 			// Call by Refernece Ã¤ndert auch Objekt in anderer HashMap
 			saveToFile();
-			aktualisiereLastWrite(kid);
+//			aktualisiereLastWrite(kid);
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
 	}
 
-	public Long getLastWrite(String id) {
-		try {
-			UUID toSearch = UUID.fromString(id);
-			return lastWrite.get(toSearch);
-		} catch (Exception e) {
-			return null;
-		}
-	}
+//	public Long getLastWrite(String id) {
+//		try {
+//			UUID toSearch = UUID.fromString(id);
+//			return lastWrite.get(toSearch);
+//		} catch (Exception e) {
+//			return null;
+//		}
+//	}
 
 	public List<Kunde> getCopyOfEveryKunde() {
 		System.out.println("Copy");
@@ -159,9 +159,9 @@ public class Datastore {
 		return result;
 	}
 
-	private void aktualisiereLastWrite(UUID kid) {
-		lastWrite.put(kid, System.currentTimeMillis());
-	}
+//	private void aktualisiereLastWrite(UUID kid) {
+//		lastWrite.put(kid, System.currentTimeMillis());
+//	}
 
 	public Ablesung deleteAblesung(String id) {
 		try {
@@ -170,7 +170,7 @@ public class Datastore {
 			if (a == null) {
 				return null;
 			}
-			UUID kid = a.getKunde().getKdnr();
+			Kunde kid = a.getKunde();
 			database_kundeToAblesung.get(kid).remove(a);
 			return a;
 		} catch (IllegalArgumentException e) {
@@ -179,21 +179,20 @@ public class Datastore {
 	}
 
 	public void saveToFile() {
-//		System.out.println(filePath);
-//		File file = filePath.toFile();
+		File file = filePathKunden.toFile();
 //		System.out.println(file.exists());
 //		System.out.println(file.getAbsolutePath());
-//		try {
-//			mapper.setDateFormat(dateformat);
-//			mapper.writeValue(file, database_kundeToAblesung);
-//		} catch (IOException e) {
+		try {
+//			mapper.setDateFormat();
+			mapper.writeValue(file, database_kundeToAblesung);
+		} catch (IOException e) {
 //			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+			e.printStackTrace();
+		}
 	}
 
 	private void loadFromFile() {
-		File file = filePath.toFile();
+		File file = filePathKunden.toFile();
 		if (file.exists()) {
 			try {
 				System.out.println("HashMap geladen mit size:");
@@ -222,7 +221,7 @@ public class Datastore {
 			if (kundeToDelete == null) {
 				return null;
 			}
-			List<Ablesung> storedAblesungen = database_kundeToAblesung.remove(kid);
+			List<Ablesung> storedAblesungen = database_kundeToAblesung.remove(kundeToDelete);
 			storedAblesungen.stream().forEach(a -> {
 				a.setKunde(null);
 				deletedAblesungen.add(a);
@@ -238,7 +237,8 @@ public class Datastore {
 	public List<Ablesung> getAblesungenFromKunde(String id) {
 		try {
 			UUID kid = UUID.fromString(id);
-			return database_kundeToAblesung.get(kid).stream().sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum()))
+			Kunde k = database_kunde.get(kid);
+			return database_kundeToAblesung.get(k).stream().sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum()))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
 			return null;
@@ -248,7 +248,8 @@ public class Datastore {
 	public List<Ablesung> getAblesungenFromKundeSince(String id, LocalDate beginn) {
 		try {
 			UUID kid = UUID.fromString(id);
-			return database_kundeToAblesung.get(kid).stream().filter(x -> x.getDatum().isAfter(beginn))
+			Kunde k = database_kunde.get(kid);
+			return database_kundeToAblesung.get(k).stream().filter(x -> x.getDatum().isAfter(beginn))
 					.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 		} catch (Exception e) {
 			return null;
@@ -258,7 +259,8 @@ public class Datastore {
 	public List<Ablesung> getAblesungenFromKundeUntil(String id, LocalDate ende) {
 		try {
 			UUID kid = UUID.fromString(id);
-			return database_kundeToAblesung.get(kid).stream().filter(x -> x.getDatum().isBefore(ende))
+			Kunde k = database_kunde.get(kid);
+			return database_kundeToAblesung.get(k).stream().filter(x -> x.getDatum().isBefore(ende))
 					.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 		} catch (Exception e) {
 			return null;
@@ -268,7 +270,8 @@ public class Datastore {
 	public List<Ablesung> getAblesungenFromKunde(String id, LocalDate beginn, LocalDate ende) {
 		try {
 			UUID kid = UUID.fromString(id);
-			return database_kundeToAblesung.get(kid).stream()
+			Kunde k = database_kunde.get(kid);
+			return database_kundeToAblesung.get(k).stream()
 					.filter(x -> x.getDatum().isAfter(beginn) && x.getDatum().isBefore(ende))
 					.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 		} catch (Exception e) {
