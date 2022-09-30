@@ -59,14 +59,14 @@ class ServerTest {
 	@BeforeAll
 	static void setUp() {
 		setUpKundenList();
-		final ResourceConfig rc = new ResourceConfig().register(AblesungRessource.class);
-		server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
+//		final ResourceConfig rc = new ResourceConfig().register(AblesungRessource.class);
+//		server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
 		System.out.println("Server Ready");
 	}
 	
 	@AfterAll
 	static void shutDown(){
-		server.stop(0);
+//		server.stop(0);
 	}
 	
 

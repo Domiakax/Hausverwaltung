@@ -147,12 +147,12 @@ public class AblesungRessource {
 		}
 	}
 
-	@GET
-	@Path("getLastWrite/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getLastWrite(@PathParam("id") String id) {
-		return ResponseBuilder.getLastWrite(Datastore.getDataStore().getLastWrite(id));
-	}
+//	@GET
+//	@Path("getLastWrite/{id}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response getLastWrite(@PathParam("id") String id) {
+//		return ResponseBuilder.getLastWrite(Datastore.getDataStore().getLastWrite(id));
+//	}
 
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)

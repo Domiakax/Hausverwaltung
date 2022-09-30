@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class Ablesung {
 	@EqualsAndHashCode.Include
 	private UUID id; 
 	private String zaehlernummer;
+	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
 	private LocalDate datum;
 	private Kunde kunde;
 	private String kommentar;

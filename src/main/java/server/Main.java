@@ -3,6 +3,8 @@ package server;
 import java.net.URI;
 import java.util.Date;
 
+import javax.swing.JOptionPane;
+
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -18,7 +20,8 @@ public class Main {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				System.out.println("System was shutdown");
+				Datastore.getDataStore().saveToFile();
+				System.out.println("saved");
 			}
 		});
 		ObjectMapper mapper = new ObjectMapper();
@@ -38,7 +41,8 @@ public class Main {
 		final HttpServer server =
 				JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
 		System.out.println("Ready");
-//		server.stop(0);
+		 JOptionPane.showMessageDialog(null, "Ende");
+		server.stop(0);
 	}
 
 }

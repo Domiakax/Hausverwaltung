@@ -25,7 +25,7 @@ public class Datastore {
 	private static ConcurrentHashMap<UUID, Kunde> database_kunde;
 	private static ConcurrentHashMap<UUID, Ablesung> database_ablesung;
 	private static final ObjectMapper mapper = new ObjectMapper();
-	private static final Path filePathKunden = Paths.get("src", "main", "resources", "kunden.json");
+	private static final Path filePathKunden = Paths.get("src", "main", "resources", "database.json");
 //	private static ConcurrentHashMap<UUID, Long> lastWrite;
 	private static List<Ablesung> deletedAblesungen;
 
