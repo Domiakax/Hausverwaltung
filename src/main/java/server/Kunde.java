@@ -3,6 +3,7 @@ package server;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName(value="kunde")
+@JsonDeserialize(keyUsing = KundeJSONDeserializer.class)
 public class Kunde {
 	@EqualsAndHashCode.Include
 	private UUID kdnr;

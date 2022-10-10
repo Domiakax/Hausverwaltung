@@ -14,7 +14,7 @@ import com.sun.net.httpserver.HttpServer;
 
 public class Main {
 	
-	public static final boolean loadFromFile = false; 
+	public static final boolean loadFromFile = true; 
 	
 	public static void main(String[] args) {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
