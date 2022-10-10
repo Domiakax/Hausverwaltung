@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Datastore {
@@ -103,7 +104,6 @@ public class Datastore {
 
 			List<Ablesung> ablesungen = database_kundeToAblesung.get(kid);
 			ablesungen.add(a);
-			saveToFile();
 //			aktualisiereLastWrite(kid);
 			return a;
 		} catch (NullPointerException e) {
@@ -130,8 +130,6 @@ public class Datastore {
 			}
 			Ablesung toUpdate = database_ablesung.get(toSearch);
 			toUpdate.updateAblesung(a);
-			// Call by Refernece Ã¤ndert auch Objekt in anderer HashMap
-			saveToFile();
 //			aktualisiereLastWrite(kid);
 			return true;
 		} catch (Exception e) {
@@ -184,8 +182,9 @@ public class Datastore {
 //		System.out.println(file.getAbsolutePath());
 		try {
 //			mapper.setDateFormat();
-			mapper.writeValue(file, database_kundeToAblesung);
-		} catch (IOException e) {
+			mapper.writerWithDefaultPrettyPrinter().writeValue(file, database_kundeToAblesung);
+			System.out.println("File written");
+		} catch (Exception e) {
 //			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -196,9 +195,19 @@ public class Datastore {
 		if (file.exists()) {
 			try {
 				System.out.println("HashMap geladen mit size:");
-				database_kundeToAblesung = mapper.readValue(file, ConcurrentHashMap.class);
+				TypeReference<ConcurrentHashMap<Kunde,List<Ablesung>>> typeRef 
+	            = new TypeReference<ConcurrentHashMap<Kunde,List<Ablesung>>>() {};
+				database_kundeToAblesung = mapper.readValue(file, typeRef);
 				System.out.println(database_kundeToAblesung.size());
-			} catch (IOException e) {
+				for(Kunde k : database_kundeToAblesung.keySet()) {
+					database_kunde.put(k.getKdnr(), k);
+				}
+				for(List<Ablesung> aList : database_kundeToAblesung.values()) {
+					aList.forEach(a -> database_ablesung.put(a.getId(), a));
+				}
+				database_kunde.forEachValue(0, System.out::println);
+				database_ablesung.forEachValue(0, System.out::println);
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

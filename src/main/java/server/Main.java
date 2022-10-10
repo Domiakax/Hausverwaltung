@@ -20,6 +20,7 @@ public class Main {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
+				System.out.println("start saving");
 				Datastore.getDataStore().saveToFile();
 				System.out.println("saved");
 			}
@@ -40,9 +41,12 @@ public class Main {
 		final ResourceConfig rc = new ResourceConfig().packages(pack);
 		final HttpServer server =
 				JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
+		Datastore.getDataStore();
 		System.out.println("Ready");
 		 JOptionPane.showMessageDialog(null, "Ende");
-		server.stop(0);
+		 System.out.println("Geschlossen");
+		server.stop(5);
+		System.out.println("Geschlossen");
 	}
 
 }

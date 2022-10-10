@@ -67,6 +67,7 @@ class ServerTest {
 	@AfterAll
 	static void shutDown(){
 //		server.stop(0);
+		System.out.println("Test fertig");
 	}
 	
 
