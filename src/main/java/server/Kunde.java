@@ -3,6 +3,7 @@ package server;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -16,7 +17,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
 @XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,5 +35,16 @@ public class Kunde {
 	public void updateKunde(Kunde update) {
 		setName(update.name);
 		setVorname(update.vorname);
+	}
+	
+	@Override
+	public String toString() {
+		try {
+			return JSONUtil.toJSON(this);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 }

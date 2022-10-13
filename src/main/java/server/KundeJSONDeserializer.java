@@ -15,7 +15,7 @@ public class KundeJSONDeserializer extends KeyDeserializer{
 		// TODO Auto-generated method stub
 		System.out.println("JSON HIER");
 		System.out.println(key);
-		return map.readValue(key, Kunde.class);
+		return JSONUtil.toKunde(key);
 	}
 
 }
