@@ -27,7 +27,7 @@ public class Datastore {
 	private static ConcurrentHashMap<UUID, Kunde> database_kunde;
 	private static ConcurrentHashMap<UUID, Ablesung> database_ablesung;
 	private static final ObjectMapper mapper = new ObjectMapper();
-	private static final Path filePathKunden = Paths.get("src", "main", "resources", "database.json");
+	private static final Path filePathKunden = Paths.get("target", "database.json");
 //	private static ConcurrentHashMap<UUID, Long> lastWrite;
 	private static List<Ablesung> deletedAblesungen;
 
@@ -44,9 +44,6 @@ public class Datastore {
 		database_ablesung = new ConcurrentHashMap<UUID, Ablesung>();
 //		lastWrite = new ConcurrentHashMap<UUID, Long>();
 		deletedAblesungen = Collections.synchronizedList(new ArrayList<>());
-		if (Main.loadFromFile) {
-			 loadFromFile();
-		}
 	}
 
 	public Kunde addNewKunde(Kunde k) {
@@ -191,7 +188,10 @@ public class Datastore {
 		}
 	}
 
-	private void loadFromFile() {
+	public void loadFromFile() {
+		if(datastore == null) {
+			return;
+		}
 		File file = filePathKunden.toFile();
 		if (file.exists()) {
 			try {
