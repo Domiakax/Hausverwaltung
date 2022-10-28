@@ -12,18 +12,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 @XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName(value="kunde")
 @JsonDeserialize(keyUsing = KundeJSONDeserializer.class)
 public class Kunde {
-	@EqualsAndHashCode.Include
 	private UUID kdnr;
 	private String name, vorname;
 
