@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 
 public class ResponseBuilder {
 	
+	
 	public static Response badRequest() {
 		return Response.status(Response.Status.BAD_REQUEST).entity(Messages.BAD_REQUEST.toString()).build();
 	}
