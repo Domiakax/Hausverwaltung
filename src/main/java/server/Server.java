@@ -9,9 +9,10 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import com.sun.net.httpserver.HttpServer;
 
-public class ServerStart {
+public class Server {
 		public static final String pack = "server";
 		private static boolean serverStarted = false;
+		private static HttpServer server;
 	
 	public static void startServer(String url, boolean loadFromFile) {
 		if(serverStarted) {
@@ -19,20 +20,27 @@ public class ServerStart {
 		}
 		System.out.println("Start Server");
 		final ResourceConfig rc = new ResourceConfig().packages(pack);
-		final HttpServer server =
+		server =
 				JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
 		serverStarted = true;
 		if(loadFromFile) {
 			Datastore.getDataStore().loadFromFile();
 		}
 		System.out.println("Ready");
-		JOptionPane.showMessageDialog(null, "Ende");
-		server.stop(0);
-		System.out.println("Geschlossen");
-		Datastore.getDataStore().saveToFile();
-		System.out.println("Saved");
-		serverStarted = false;
+//		JOptionPane.showMessageDialog(null, "Ende");
+//		stopServer();
 	}
 	
 
+	public static void stopServer(boolean saveToFile) {
+		if(serverStarted) {
+			server.stop(0);
+			System.out.println("Geschlossen");
+			if(saveToFile) {
+				Datastore.getDataStore().saveToFile();
+			}
+			System.out.println("Saved");
+			serverStarted = false;
+		}
+	}
 }

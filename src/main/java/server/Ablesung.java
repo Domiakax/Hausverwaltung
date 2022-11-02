@@ -37,7 +37,7 @@ public class Ablesung {
 	private Kunde kunde;
 	private String kommentar;
 	private boolean neuEingebaut;
-	private int zaehlerstand;
+	private Number zaehlerstand;
 	
 	public void updateAblesung(Ablesung a) {
 		this.zaehlernummer = a.zaehlernummer;

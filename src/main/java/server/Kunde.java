@@ -15,13 +15,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName(value="kunde")
 @JsonDeserialize(keyUsing = KundeJSONDeserializer.class)
 public class Kunde {
+	@EqualsAndHashCode.Include
 	private UUID kdnr;
 	private String name, vorname;
 

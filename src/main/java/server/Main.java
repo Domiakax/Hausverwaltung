@@ -35,7 +35,7 @@ public class Main {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		ServerStart.startServer("http://localhost:8080/test", false);
+		Server.startServer("http://localhost:8080/test", false);
 	}
 
 }

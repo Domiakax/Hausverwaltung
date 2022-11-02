@@ -5,25 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import com.sun.net.httpserver.HttpServer;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -33,8 +29,8 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import server.Ablesung;
-import server.AblesungRessource;
 import server.Kunde;
+import server.Server;
 
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 class ServerTest {
@@ -52,24 +48,20 @@ class ServerTest {
 
 	private static List<Kunde> kunden;
 	private static HashMap<Kunde, List<Ablesung>> ablesungen;
-	private static HttpServer server;
 	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-	
 	@BeforeAll
 	static void setUp() {
 		setUpKundenList();
-//		final ResourceConfig rc = new ResourceConfig().register(AblesungRessource.class);
-//		server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
+		Server.startServer(url, false);
 		System.out.println("Server Ready");
 	}
-	
+
 	@AfterAll
-	static void shutDown(){
-//		server.stop(0);
+	static void shutDown() {
+		Server.stopServer(false);
 		System.out.println("Test fertig");
 	}
-	
 
 	private static void setUpKundenList() {
 		kunden = new ArrayList<>();
@@ -77,8 +69,6 @@ class ServerTest {
 		kunden.add(k2_RangeTest);
 		kunden.add(k3_RangeTest);
 
-//		setUpRangeTest erst mit Kunden ID m�glich
-//		setUpForRangeTest();
 	}
 
 	private static void setUpForRangeTest() {
@@ -223,7 +213,7 @@ class ServerTest {
 	@Test
 	void t09_modifyExistingAblesung() {
 		Ablesung a = ablesungen.get(k1).get(0);
-		final int newZaehlerstand = a.getZaehlerstand() + 100;
+		final int newZaehlerstand = a.getZaehlerstand().intValue() + 100;
 		a.setZaehlerstand(newZaehlerstand);
 		Response re = target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
 				.put(Entity.entity(a, MediaType.APPLICATION_JSON));
@@ -301,16 +291,16 @@ class ServerTest {
 	void t15_getEveryAblesungSince() {
 		LocalDate beginn = LocalDate.of(2021, 2, 1);
 		List<Ablesung> result = new ArrayList<>();
-		for(List<Ablesung> toFilter : ablesungen.values()) {
-			for(Ablesung a : toFilter) {
-				if(a.getDatum().isAfter(beginn)) {
+		for (List<Ablesung> toFilter : ablesungen.values()) {
+			for (Ablesung a : toFilter) {
+				if (a.getDatum().isAfter(beginn)) {
 					result.add(a);
 				}
 			}
 		}
 		String beginnString = beginn.format(dateFormatter);
-		Response re = target.path(endpointAblesungen).queryParam("beginn", beginnString)
-				.request().accept(MediaType.APPLICATION_JSON).get();
+		Response re = target.path(endpointAblesungen).queryParam("beginn", beginnString).request()
+				.accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		List<Ablesung> resultGot = re.readEntity(new GenericType<List<Ablesung>>() {
 		});
@@ -319,21 +309,21 @@ class ServerTest {
 			assertTrue(resultGot.contains(a));
 		}
 	}
-	
+
 	@Test
 	void t16_getEveryAblesungUntil() {
 		LocalDate ende = LocalDate.of(2021, 7, 1);
 		List<Ablesung> result = new ArrayList<>();
-		for(List<Ablesung> toFilter : ablesungen.values()) {
-			for(Ablesung a : toFilter) {
-				if(a.getDatum().isBefore(ende)) {
+		for (List<Ablesung> toFilter : ablesungen.values()) {
+			for (Ablesung a : toFilter) {
+				if (a.getDatum().isBefore(ende)) {
 					result.add(a);
 				}
 			}
 		}
 		String endeString = ende.format(dateFormatter);
-		Response re = target.path(endpointAblesungen).queryParam("ende", endeString)
-				.request().accept(MediaType.APPLICATION_JSON).get();
+		Response re = target.path(endpointAblesungen).queryParam("ende", endeString).request()
+				.accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		List<Ablesung> resultGot = re.readEntity(new GenericType<List<Ablesung>>() {
 		});
@@ -341,6 +331,28 @@ class ServerTest {
 		for (Ablesung a : result) {
 			assertTrue(resultGot.contains(a));
 		}
+	}
+
+	@Test
+	void t17_loadFromFileWorks() {
+		Server.stopServer(true);
+		Server.startServer(url, true);
+		Response re = target.path(endpointKunden).request().accept(MediaType.APPLICATION_JSON).get();
+		List<Kunde> kundenFromServer = re.readEntity(new GenericType<List<Kunde>>() {});
+		assertEquals(kunden.size(), kundenFromServer.size());
+		for(Kunde k : kunden) {
+			assertTrue(kundenFromServer.contains(k));
+		}
+		resetClient();
+		re = target.path(endpointAblesungen).request().accept(MediaType.APPLICATION_JSON).get();
+		List<Ablesung> ablesungenFromServer = re.readEntity(new GenericType<List<Ablesung>>() {});
+		Collection<List<Ablesung>> lists = ablesungen.values();
+		AtomicInteger counter = new AtomicInteger();
+		lists.stream().forEach(x -> x.stream().forEach(y -> {
+			assertTrue(ablesungenFromServer.contains(y));
+			counter.getAndIncrement();
+		}));
+		assertTrue(ablesungenFromServer.size() == counter.get());
 	}
 
 }
