@@ -3,8 +3,10 @@ package serverTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.ConnectException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -71,6 +74,29 @@ class ServerTest {
 
 	}
 
+	
+	@BeforeEach
+	void resetClient() {
+		target = client.target(url.concat("/hausverwaltung"));
+	}
+
+	@Test
+	void t01_addNewKunden() {
+		for (Kunde k : kunden) {
+			Response response = postNeuerKunde(k);
+			assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+			Kunde kResponse = response.readEntity(Kunde.class);
+			assertNotNull(kResponse.getKdnr());
+			k.setKdnr(kResponse.getKdnr());
+		}
+		setUpForRangeTest();
+	}
+
+	private Response postNeuerKunde(Kunde k) {
+		return target.path(endpointKunden).request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(k, MediaType.APPLICATION_JSON));
+	}
+	
 	private static void setUpForRangeTest() {
 		ablesungen = new HashMap<>();
 		for (Kunde k : kunden) {
@@ -94,27 +120,6 @@ class ServerTest {
 		ablesungen.get(k3_RangeTest).add(a8);
 	}
 
-	@BeforeEach
-	void resetClient() {
-		target = client.target("http://localhost:8080/test/hausverwaltung");
-	}
-
-	@Test
-	void t01_addNewKunden() {
-		for (Kunde k : kunden) {
-			Response response = postNeuerKunde(k);
-			assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-			Kunde kResponse = response.readEntity(Kunde.class);
-			assertNotNull(kResponse.getKdnr());
-			k.setKdnr(kResponse.getKdnr());
-		}
-		setUpForRangeTest();
-	}
-
-	private Response postNeuerKunde(Kunde k) {
-		return target.path(endpointKunden).request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(k, MediaType.APPLICATION_JSON));
-	}
 
 	@Test
 	void t02_1_addNewKundeFailsIfKundeIsNull() {
@@ -191,8 +196,6 @@ class ServerTest {
 				a.setId(result.getId());
 			}
 		}
-//		List<Ablesung> k1Ablesungen = ablesungen.get(k1);
-//		k1Ablesungen.add(result);
 	}
 
 	private Response postNeueAblesung(Ablesung a) {
@@ -336,6 +339,7 @@ class ServerTest {
 	@Test
 	void t17_loadFromFileWorks() {
 		Server.stopServer(true);
+		assertThrows(ProcessingException.class, () -> postNeuerKunde(new Kunde("Fehler", "Fehler")));
 		Server.startServer(url, true);
 		Response re = target.path(endpointKunden).request().accept(MediaType.APPLICATION_JSON).get();
 		List<Kunde> kundenFromServer = re.readEntity(new GenericType<List<Kunde>>() {});
