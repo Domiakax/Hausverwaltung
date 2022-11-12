@@ -41,6 +41,7 @@ public class Server {
 			}
 			System.out.println("Saved");
 			serverStarted = false;
+			server = null;
 		}
 	}
 }
