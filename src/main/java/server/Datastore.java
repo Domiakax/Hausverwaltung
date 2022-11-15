@@ -29,7 +29,6 @@ public class Datastore {
 	private static final ObjectMapper mapper = new ObjectMapper();
 	private static final Path filePathKunden = Paths.get("target", "database.json");
 //	private static ConcurrentHashMap<UUID, Long> lastWrite;
-	private static List<Ablesung> deletedAblesungen;
 
 	public static Datastore getDataStore() {
 		if (datastore == null) {
@@ -43,7 +42,6 @@ public class Datastore {
 		database_kunde = new ConcurrentHashMap<>();
 		database_ablesung = new ConcurrentHashMap<UUID, Ablesung>();
 //		lastWrite = new ConcurrentHashMap<UUID, Long>();
-		deletedAblesungen = Collections.synchronizedList(new ArrayList<>());
 	}
 
 	public Kunde addNewKunde(Kunde k) {
@@ -167,7 +165,9 @@ public class Datastore {
 				return null;
 			}
 			Kunde kid = a.getKunde();
-			database_kundeToAblesung.get(kid).remove(a);
+			if(kid != null) {
+				database_kundeToAblesung.get(kid).remove(a);
+			}
 			return a;
 		} catch (IllegalArgumentException e) {
 			return null;
@@ -234,7 +234,6 @@ public class Datastore {
 			List<Ablesung> storedAblesungen = database_kundeToAblesung.remove(kundeToDelete);
 			storedAblesungen.stream().forEach(a -> {
 				a.setKunde(null);
-				deletedAblesungen.add(a);
 			});
 			HashMap<Kunde, List<Ablesung>> toReturn = new HashMap<>();
 			toReturn.put(kundeToDelete, storedAblesungen);

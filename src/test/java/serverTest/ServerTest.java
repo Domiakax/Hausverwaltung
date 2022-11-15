@@ -3,6 +3,7 @@ package serverTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -236,17 +238,38 @@ class ServerTest {
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());
 	}
+	
+	@Test
+	void t11_0_deleteKunde() {
+		String k1ID = k1.getKdnr().toString();
+		kunden.remove(k1);
+		Response re = target.path(endpointKunden.concat("/").concat(k1ID)).request().accept(MediaType.APPLICATION_JSON).delete();
+		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
+		Map<Kunde, List<Ablesung>> result = re.readEntity(new GenericType<Map<Kunde, List<Ablesung>>>(){});
+		assertEquals(1, result.keySet().size());
+		assertTrue(result.keySet().contains(k1));
+		
+		List<Ablesung> ablesungenExpected = ablesungen.get(k1);
+		List<Ablesung> ablesungenResult = result.get(k1);
+		assertEquals(ablesungenExpected.size(), ablesungenResult.size());
+		
+		for(Ablesung a : ablesungenResult) {
+			assertTrue(ablesungenExpected.contains(a));
+			assertNull(a.getKunde());
+		}
+	}
 
 	@Test
 	void t11_deleteAblesung() {
-		Ablesung stored = ablesungen.get(k1).remove(0);
+		Ablesung stored = ablesungen.remove(k1).get(0);
+		stored.setKunde(null);
 		String aid = stored.getId().toString();
 		Response re = target.path(endpointAblesungen.concat("/").concat(aid)).request()
 				.accept(MediaType.APPLICATION_JSON).delete();
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		Ablesung result = re.readEntity(Ablesung.class);
 		assertEquals(stored, result);
-		re = target.path(endpointAblesungen.concat("/").concat(stored.getId().toString())).request()
+		re = target.path(endpointAblesungen.concat("/").concat(aid)).request()
 				.accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());

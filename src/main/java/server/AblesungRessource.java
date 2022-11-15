@@ -91,13 +91,13 @@ public class AblesungRessource {
 
 	// GET alle Ablesungen
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("getEveryAblesungFromKunde/{kundeId}")
-	public Response getEveryAblesung(@PathParam("kundeId") String kundeId) {
-		List<Ablesung> results = Datastore.getDataStore().getAblesungenFromKunde(kundeId);
-		return results == null ? ResponseBuilder.kundeNotFound() : null;
-	}
+//	@GET
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Path("getEveryAblesungFromKunde/{kundeId}")
+//	public Response getEveryAblesung(@PathParam("kundeId") String kundeId) {
+//		List<Ablesung> results = Datastore.getDataStore().getAblesungenFromKunde(kundeId);
+//		return results == null ? ResponseBuilder.kundeNotFound() : null;
+//	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -168,7 +168,7 @@ public class AblesungRessource {
 
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("deleteKunde/{id}")
+	@Path(endpointKunde+"/{id}")
 	public Response deleteKunde(@PathParam("id") String id) {
 		HashMap<Kunde, List<Ablesung>> storedInformation = Datastore.getDataStore().deleteKunde(id);
 		return storedInformation == null ? ResponseBuilder.kundeNotDeleted()

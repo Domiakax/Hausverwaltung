@@ -2,6 +2,7 @@ package server;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -30,7 +31,7 @@ public class ResponseBuilder {
 	}
 	
 	public static Response kundeDeleted(HashMap<Kunde, List<Ablesung>> ablesungen) {
-		return Response.status(Response.Status.OK).entity(ablesungen).build();
+			return Response.status(Response.Status.OK).entity(ablesungen).build();
 	}
 	
 	public static Response kundeNotDeleted() {
