@@ -258,6 +258,13 @@ class ServerTest {
 			assertNull(a.getKunde());
 		}
 	}
+	
+	@Test
+	void t11_0_deleteKundeFailsForNoneExisitingKunde() {
+		Response re = target.path(endpointKunden.concat("/null")).request().accept(MediaType.APPLICATION_JSON).delete();
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
+		assertFalse(re.readEntity(String.class).isBlank());
+	}
 
 	@Test
 	void t11_deleteAblesung() {
