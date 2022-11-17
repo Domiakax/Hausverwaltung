@@ -24,6 +24,7 @@ public class AblesungRessource {
 
 	private static final String endpointKunde = "kunden";
 	private static final String endpointAblesung = "ablesungen";
+	private static final String endpointAblesungClientStart = "ablesungenVorZweiJahrenHeute";
 	public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	@POST
@@ -106,6 +107,13 @@ public class AblesungRessource {
 		System.out.println("Ablesung normal");
 		Ablesung toSearch = Datastore.getDataStore().getSingleAblesung(ablesungId);
 		return toSearch == null ? ResponseBuilder.ablesungNotFound() : ResponseBuilder.ablesungFound(toSearch);
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path(endpointAblesungClientStart)
+	public Response getAblesungenForClientStart() {
+		return ResponseBuilder.getAblesungen(Datastore.getDataStore().getAblesungenForClientStart());
 	}
 
 	@GET

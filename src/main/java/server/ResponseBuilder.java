@@ -82,4 +82,5 @@ public class ResponseBuilder {
 		return Response.status(Response.Status.OK).entity(ablesungen).build();
 	}
 	
+	
 }

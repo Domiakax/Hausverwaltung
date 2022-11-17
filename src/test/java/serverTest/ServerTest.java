@@ -45,6 +45,7 @@ class ServerTest {
 
 	private static final String endpointKunden = "kunden";
 	private static final String endpointAblesungen = "ablesungen";
+	private static final String endpointAblesungClientStart = "ablesungenVorZweiJahrenHeute";
 
 	private static final Kunde k1 = new Kunde("C", "c");
 	private static final Kunde k2_RangeTest = new Kunde("A", "a");
@@ -75,7 +76,6 @@ class ServerTest {
 
 	}
 
-	
 	@BeforeEach
 	void resetClient() {
 		target = client.target(url.concat("/hausverwaltung"));
@@ -97,20 +97,23 @@ class ServerTest {
 		return target.path(endpointKunden).request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.post(Entity.entity(k, MediaType.APPLICATION_JSON));
 	}
-	
+
 	private static void setUpForRangeTest() {
 		ablesungen = new HashMap<>();
 		for (Kunde k : kunden) {
 			ablesungen.put(k, new ArrayList<>());
 		}
-		Ablesung a1 = new Ablesung("1", LocalDate.of(2021, 1, 1), k2_RangeTest, "test", false, 0);
-		Ablesung a2 = new Ablesung("1", LocalDate.of(2021, 4, 1), k2_RangeTest, "test", false, 0);
-		Ablesung a3 = new Ablesung("1", LocalDate.of(2021, 8, 1), k2_RangeTest, "test", false, 0);
-		Ablesung a4 = new Ablesung("1", LocalDate.of(2021, 12, 1), k2_RangeTest, "test", false, 0);
-		Ablesung a5 = new Ablesung("1", LocalDate.of(2021, 1, 1), k3_RangeTest, "test", false, 0);
-		Ablesung a6 = new Ablesung("1", LocalDate.of(2021, 4, 1), k3_RangeTest, "test", false, 0);
-		Ablesung a7 = new Ablesung("1", LocalDate.of(2021, 8, 1), k3_RangeTest, "test", false, 0);
-		Ablesung a8 = new Ablesung("1", LocalDate.of(2021, 12, 1), k3_RangeTest, "test", false, 0);
+		int jahr = LocalDate.now().getYear() - 1;
+		Ablesung a1 = new Ablesung("1", LocalDate.of(jahr, 1, 1), k2_RangeTest, "test", false, 0);
+		Ablesung a2 = new Ablesung("1", LocalDate.of(jahr, 4, 1), k2_RangeTest, "test", false, 0);
+		Ablesung a3 = new Ablesung("1", LocalDate.of(jahr, 8, 1), k2_RangeTest, "test", false, 0);
+		Ablesung a4 = new Ablesung("1", LocalDate.of(jahr, 12, 1), k2_RangeTest, "test", false, 0);
+		Ablesung a5 = new Ablesung("1", LocalDate.of(jahr, 1, 1), k3_RangeTest, "test", false, 0);
+		Ablesung a6 = new Ablesung("1", LocalDate.of(jahr, 4, 1), k3_RangeTest, "test", false, 0);
+		Ablesung a7 = new Ablesung("1", LocalDate.of(jahr, 8, 1), k3_RangeTest, "test", false, 0);
+		Ablesung a8 = new Ablesung("1", LocalDate.of(jahr, 12, 1), k3_RangeTest, "test", false, 0);
+		Ablesung notAtClientStart = new Ablesung("1", LocalDate.of(jahr - 3, 8, 1), k2_RangeTest, endpointAblesungen,
+				false, 0);
 		ablesungen.get(k2_RangeTest).add(a1);
 		ablesungen.get(k2_RangeTest).add(a2);
 		ablesungen.get(k2_RangeTest).add(a3);
@@ -119,8 +122,8 @@ class ServerTest {
 		ablesungen.get(k3_RangeTest).add(a6);
 		ablesungen.get(k3_RangeTest).add(a7);
 		ablesungen.get(k3_RangeTest).add(a8);
+		ablesungen.get(k2_RangeTest).add(notAtClientStart);
 	}
-
 
 	@Test
 	void t02_1_addNewKundeFailsIfKundeIsNull() {
@@ -182,7 +185,7 @@ class ServerTest {
 	}
 
 	@Test
-	void t07_createAblesungForKunde() {
+	void t07_createAblesungForKunden() {
 		LocalDate d = LocalDate.of(2022, 8, 25);
 		Ablesung a1 = new Ablesung("1", d, k1, "test", false, 100);
 		ablesungen.get(k1).add(a1);
@@ -238,27 +241,29 @@ class ServerTest {
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());
 	}
-	
+
 	@Test
 	void t11_0_deleteKunde() {
 		String k1ID = k1.getKdnr().toString();
 		kunden.remove(k1);
-		Response re = target.path(endpointKunden.concat("/").concat(k1ID)).request().accept(MediaType.APPLICATION_JSON).delete();
+		Response re = target.path(endpointKunden.concat("/").concat(k1ID)).request().accept(MediaType.APPLICATION_JSON)
+				.delete();
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
-		Map<Kunde, List<Ablesung>> result = re.readEntity(new GenericType<Map<Kunde, List<Ablesung>>>(){});
+		Map<Kunde, List<Ablesung>> result = re.readEntity(new GenericType<Map<Kunde, List<Ablesung>>>() {
+		});
 		assertEquals(1, result.keySet().size());
 		assertTrue(result.keySet().contains(k1));
-		
+
 		List<Ablesung> ablesungenExpected = ablesungen.get(k1);
 		List<Ablesung> ablesungenResult = result.get(k1);
 		assertEquals(ablesungenExpected.size(), ablesungenResult.size());
-		
-		for(Ablesung a : ablesungenResult) {
+
+		for (Ablesung a : ablesungenResult) {
 			assertTrue(ablesungenExpected.contains(a));
 			assertNull(a.getKunde());
 		}
 	}
-	
+
 	@Test
 	void t11_0_deleteKundeFailsForNoneExisitingKunde() {
 		Response re = target.path(endpointKunden.concat("/null")).request().accept(MediaType.APPLICATION_JSON).delete();
@@ -276,8 +281,7 @@ class ServerTest {
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		Ablesung result = re.readEntity(Ablesung.class);
 		assertEquals(stored, result);
-		re = target.path(endpointAblesungen.concat("/").concat(aid)).request()
-				.accept(MediaType.APPLICATION_JSON).get();
+		re = target.path(endpointAblesungen.concat("/").concat(aid)).request().accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());
 	}
@@ -288,6 +292,18 @@ class ServerTest {
 				.delete();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());
+	}
+
+	@Test
+	void t13_0_getAblesungenForClientStart() {
+		Response re = target.path(endpointAblesungClientStart).request().accept(MediaType.APPLICATION_JSON).get();
+		List<Ablesung> ablesungenResult = re.readEntity(new GenericType<List<Ablesung>>() {
+		});
+		for (List<Ablesung> l : ablesungen.values()) {
+			l.stream().filter(a -> a.getDatum().isAfter(LocalDate.of(LocalDate.now().getYear() - 2, 1, 1)))
+					.forEach(a -> assertTrue(ablesungenResult.contains(a)));
+			;
+		}
 	}
 
 	@Test
@@ -371,14 +387,16 @@ class ServerTest {
 		assertThrows(ProcessingException.class, () -> postNeuerKunde(new Kunde("Fehler", "Fehler")));
 		Server.startServer(url, true);
 		Response re = target.path(endpointKunden).request().accept(MediaType.APPLICATION_JSON).get();
-		List<Kunde> kundenFromServer = re.readEntity(new GenericType<List<Kunde>>() {});
+		List<Kunde> kundenFromServer = re.readEntity(new GenericType<List<Kunde>>() {
+		});
 		assertEquals(kunden.size(), kundenFromServer.size());
-		for(Kunde k : kunden) {
+		for (Kunde k : kunden) {
 			assertTrue(kundenFromServer.contains(k));
 		}
 		resetClient();
 		re = target.path(endpointAblesungen).request().accept(MediaType.APPLICATION_JSON).get();
-		List<Ablesung> ablesungenFromServer = re.readEntity(new GenericType<List<Ablesung>>() {});
+		List<Ablesung> ablesungenFromServer = re.readEntity(new GenericType<List<Ablesung>>() {
+		});
 		Collection<List<Ablesung>> lists = ablesungen.values();
 		AtomicInteger counter = new AtomicInteger();
 		lists.stream().forEach(x -> x.stream().forEach(y -> {

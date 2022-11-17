@@ -1,24 +1,19 @@
 package server;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class Datastore {
 
@@ -28,7 +23,8 @@ public class Datastore {
 	private static ConcurrentHashMap<UUID, Ablesung> database_ablesung;
 	private static final ObjectMapper mapper = new ObjectMapper();
 	private static final Path filePathKunden = Paths.get("target", "database.json");
-//	private static ConcurrentHashMap<UUID, Long> lastWrite;
+	private static final LocalDate ablesungGrenze = LocalDate.of(LocalDate.now().getYear() - 2, 1, 1);
+	// private static ConcurrentHashMap<UUID, Long> lastWrite;
 
 	public static Datastore getDataStore() {
 		if (datastore == null) {
@@ -165,7 +161,7 @@ public class Datastore {
 				return null;
 			}
 			Kunde kid = a.getKunde();
-			if(kid != null) {
+			if (kid != null) {
 				database_kundeToAblesung.get(kid).remove(a);
 			}
 			return a;
@@ -189,21 +185,21 @@ public class Datastore {
 	}
 
 	public void loadFromFile() {
-		if(datastore == null) {
+		if (datastore == null) {
 			return;
 		}
 		File file = filePathKunden.toFile();
 		if (file.exists()) {
 			try {
 				System.out.println("HashMap geladen mit size:");
-				TypeReference<ConcurrentHashMap<Kunde,List<Ablesung>>> typeRef 
-	            = new TypeReference<ConcurrentHashMap<Kunde,List<Ablesung>>>() {};
+				TypeReference<ConcurrentHashMap<Kunde, List<Ablesung>>> typeRef = new TypeReference<ConcurrentHashMap<Kunde, List<Ablesung>>>() {
+				};
 				database_kundeToAblesung = mapper.readValue(file, typeRef);
 				System.out.println(database_kundeToAblesung.size());
-				for(Kunde k : database_kundeToAblesung.keySet()) {
+				for (Kunde k : database_kundeToAblesung.keySet()) {
 					database_kunde.put(k.getKdnr(), k);
 				}
-				for(List<Ablesung> aList : database_kundeToAblesung.values()) {
+				for (List<Ablesung> aList : database_kundeToAblesung.values()) {
 					aList.forEach(a -> database_ablesung.put(a.getId(), a));
 				}
 				database_kunde.forEachValue(0, System.out::println);
@@ -222,6 +218,11 @@ public class Datastore {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public List<Ablesung> getAblesungenForClientStart() {
+		return database_ablesung.values().stream().filter(a -> a.getDatum().isAfter(ablesungGrenze))
+				.collect(Collectors.toList());
 	}
 
 	public HashMap<Kunde, List<Ablesung>> deleteKunde(String id) {
