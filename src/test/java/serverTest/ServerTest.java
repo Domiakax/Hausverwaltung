@@ -76,7 +76,7 @@ class ServerTest {
 	@AfterAll
 	static void shutDown() {
 		Server.stopServer(false);
-		System.out.println("Test fertig");
+		System.out.println("Tests abgeschlossen");
 	}
 
 
@@ -193,11 +193,12 @@ class ServerTest {
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		List<Kunde> resopnseKunden = re.readEntity(new GenericType<List<Kunde>>() {
 		});
-		List<Kunde> sortedKunden = kunden.stream().sorted((k1, k2) -> k1.getName().compareTo(k2.getName()))
-				.collect(Collectors.toList());
-		for (Kunde k : sortedKunden) {
+		assertTrue(resopnseKunden.size() == kunden.size());
+//		List<Kunde> sortedKunden = kunden.stream().sorted((k1, k2) -> k1.getName().compareTo(k2.getName()))
+//				.collect(Collectors.toList());
+		for (Kunde k : kunden) {
 			assertTrue(resopnseKunden.contains(k));
-			assertEquals(k, resopnseKunden.get(sortedKunden.indexOf(k)));
+//			assertEquals(k, resopnseKunden.get(sortedKunden.indexOf(k)));
 		}
 	}
 
@@ -221,8 +222,6 @@ class ServerTest {
 
 	@Test
 	void t10_createAblesungForKunden() {
-//		LocalDate d = LocalDate.of(2022, 8, 25);
-//		Ablesung a1 = new Ablesung("1", d, k2_RangeTest, "test", false, 100);
 		ablesungen.get(k2_RangeTest).add(crudTest);
 		Collection<List<Ablesung>> lists = ablesungen.values();
 		for (List<Ablesung> l : lists) {
@@ -260,8 +259,7 @@ class ServerTest {
 	}
 
 	@Test
-	void t13_modifyExistingAblesung() {
-//		Ablesung a = ablesungen.get(k2_RangeTest).get(0);
+	void t13_updateExistingAblesung() {
 		final int newZaehlerstand = crudTest.getZaehlerstand().intValue() + 100;
 		crudTest.setZaehlerstand(newZaehlerstand);
 		Response re = target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
@@ -296,9 +294,6 @@ class ServerTest {
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		Ablesung result = re.readEntity(Ablesung.class);
 		assertEquals(crudTest, result);
-		re = target.path(endpointAblesungen.concat("/").concat(aid)).request().accept(MediaType.APPLICATION_JSON).get();
-		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
-		assertFalse(re.readEntity(String.class).isBlank());
 	}
 
 	@Test
@@ -311,12 +306,18 @@ class ServerTest {
 	
 	@Test
 	void t17_getSingleAblesung() {
-		
+		Ablesung toSearch = ablesungen.get(k2_RangeTest).get(0);
+		Response re = target.path(endpointAblesungen.concat("/").concat(toSearch.getId().toString())).request().accept(MediaType.APPLICATION_JSON).get();
+		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
+		Ablesung result = re.readEntity(Ablesung.class);
+		assertEquals(toSearch, result);
 	}
 	
 	@Test
 	void t18_getSingleAblesungFailsForNoneExistingABlesung() {
-		
+		Response re = target.path(endpointAblesungen.concat("/").concat(crudTest.getId().toString())).request().accept(MediaType.APPLICATION_JSON).get();
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
+		assertFalse(re.readEntity(String.class).isBlank());
 	}
 
 	@Test
