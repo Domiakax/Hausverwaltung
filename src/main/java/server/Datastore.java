@@ -58,7 +58,7 @@ public class Datastore {
 		while (database_kunde.containsKey(kid)) {
 			kid = UUID.randomUUID();
 		}
-		k.setKdnr(kid);
+		k.setId(kid);
 		database_kunde.put(kid, k);
 	}
 
@@ -73,7 +73,7 @@ public class Datastore {
 
 	public boolean modifyKunde(Kunde toUpdate) {
 		try {
-			UUID toSearchId = toUpdate.getKdnr();
+			UUID toSearchId = toUpdate.getId();
 			Kunde stored = database_kunde.get(toSearchId);
 			if (stored == null) {
 				return false;
@@ -115,7 +115,7 @@ public class Datastore {
 	public boolean modifyExistingAblesung(Ablesung a) {
 		try {
 			UUID toSearch = a.getId();
-			UUID kid = a.getKunde().getKdnr();
+			UUID kid = a.getKunde().getId();
 			// UngÃ¼ltiger Kunde
 			if (!database_kunde.containsKey(kid)) {
 				return false;
@@ -197,7 +197,7 @@ public class Datastore {
 				database_kundeToAblesung = mapper.readValue(file, typeRef);
 				System.out.println(database_kundeToAblesung.size());
 				for (Kunde k : database_kundeToAblesung.keySet()) {
-					database_kunde.put(k.getKdnr(), k);
+					database_kunde.put(k.getId(), k);
 				}
 				for (List<Ablesung> aList : database_kundeToAblesung.values()) {
 					aList.forEach(a -> database_ablesung.put(a.getId(), a));

@@ -2,8 +2,6 @@ package server;
 
 import java.net.URI;
 
-import javax.swing.JOptionPane;
-
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 

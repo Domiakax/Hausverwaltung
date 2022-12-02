@@ -91,8 +91,8 @@ class ServerTest {
 			Response response = postNeuerKunde(k);
 			assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
 			Kunde kResponse = response.readEntity(Kunde.class);
-			assertNotNull(kResponse.getKdnr());
-			k.setKdnr(kResponse.getKdnr());
+			assertNotNull(kResponse.getId());
+			k.setId(kResponse.getId());
 		}
 		setUpForRangeTest();
 	}
@@ -144,14 +144,14 @@ class ServerTest {
 				.put(Entity.entity(k1, MediaType.APPLICATION_JSON));
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		resetClient();
-		String path = endpointKunden.concat("/").concat(k1.getKdnr().toString());
+		String path = endpointKunden.concat("/").concat(k1.getId().toString());
 		re = target.path(path).request().accept(MediaType.APPLICATION_JSON).get();
 		Kunde responseKunde = re.readEntity(Kunde.class);
 		assertEquals(newName, responseKunde.getName());
 	}
 
 	@Test
-	void t04_updateNotExisitngKundeFails() {
+	void t04_updateNonExisitngKundeFails() {
 		Kunde notInServer = new Kunde("No", "No");
 		Response re = target.path(endpointKunden).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
 				.put(Entity.entity(notInServer, MediaType.APPLICATION_JSON));
@@ -160,7 +160,7 @@ class ServerTest {
 	
 	@Test
 	void t05_deleteKunde() {
-		String k1ID = k1.getKdnr().toString();
+		String k1ID = k1.getId().toString();
 		kunden.remove(k1);
 		Response re = target.path(endpointKunden.concat("/").concat(k1ID)).request().accept(MediaType.APPLICATION_JSON)
 				.delete();
@@ -181,7 +181,7 @@ class ServerTest {
 	}
 
 	@Test
-	void t06_deleteKundeFailsForNoneExisitingKunde() {
+	void t06_deleteKundeFailsForNonExisitingKunde() {
 		Response re = target.path(endpointKunden.concat("/null")).request().accept(MediaType.APPLICATION_JSON).delete();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());
@@ -204,7 +204,7 @@ class ServerTest {
 
 	@Test
 	void t08_getSingleKunde() {
-		Response re = target.path(endpointKunden.concat("/").concat(k2_RangeTest.getKdnr().toString()))
+		Response re = target.path(endpointKunden.concat("/").concat(k2_RangeTest.getId().toString()))
 				.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
 		Kunde result = re.readEntity(Kunde.class);
@@ -212,7 +212,7 @@ class ServerTest {
 	}
 
 	@Test
-	void t09_getSingleKundeFailsForNoneExistingKunde() {
+	void t09_getSingleKundeFailsForNonExistingKunde() {
 		Response re = target.path(endpointKunden.concat("/null")).request().accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());
@@ -242,7 +242,7 @@ class ServerTest {
 	}
 
 	@Test
-	void t11_createAblesungForNotExistingKundeFails() {
+	void t11_createAblesungForNonExistingKundeFails() {
 		LocalDate now = LocalDate.now();
 		Ablesung a = new Ablesung("1", now, null, "test", false, 0);
 		Response re = postNeueAblesung(a);
@@ -273,7 +273,7 @@ class ServerTest {
 	}
 
 	@Test
-	void t14_modifyNotExistingAblesungFails() {
+	void t14_updateNonExistingAblesungFails() {
 		Ablesung a = new Ablesung();
 		a.setId(null);
 		Response re = target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
@@ -297,7 +297,7 @@ class ServerTest {
 	}
 
 	@Test
-	void t16_deleteAblesungFailsForNoneExistingAblesung() {
+	void t16_deleteAblesungFailsForNonExistingAblesung() {
 		Response re = target.path(endpointAblesungen.concat("/null")).request().accept(MediaType.APPLICATION_JSON)
 				.delete();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
@@ -314,7 +314,7 @@ class ServerTest {
 	}
 	
 	@Test
-	void t18_getSingleAblesungFailsForNoneExistingABlesung() {
+	void t18_getSingleAblesungFailsForNonExistingAblesung() {
 		Response re = target.path(endpointAblesungen.concat("/").concat(crudTest.getId().toString())).request().accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
 		assertFalse(re.readEntity(String.class).isBlank());
@@ -347,7 +347,7 @@ class ServerTest {
 		LocalDate ende = LocalDate.of(2021, 9, 1);
 		List<Ablesung> filter = ablesungen.get(k2_RangeTest).stream()
 				.filter(x -> x.getDatum().isAfter(beginn) && x.getDatum().isBefore(ende)).collect(Collectors.toList());
-		String kid = k2_RangeTest.getKdnr().toString();
+		String kid = k2_RangeTest.getId().toString();
 		String beginnString = beginn.format(dateFormatter);
 		String endeString = ende.format(dateFormatter);
 		Response re = target.path(endpointAblesungen).queryParam("kunde", kid).queryParam("beginn", beginnString)
@@ -362,7 +362,7 @@ class ServerTest {
 	}
 
 	@Test
-	void t22_getEveryAblesungSince() {
+	void t22_getEveryAblesungSinceSpecificDate() {
 		LocalDate beginn = LocalDate.of(2021, 2, 1);
 		List<Ablesung> result = new ArrayList<>();
 		for (List<Ablesung> toFilter : ablesungen.values()) {
@@ -385,7 +385,7 @@ class ServerTest {
 	}
 
 	@Test
-	void t23_getEveryAblesungUntil() {
+	void t23_getEveryAblesungUntilSpecificDate() {
 		LocalDate ende = LocalDate.of(2021, 7, 1);
 		List<Ablesung> result = new ArrayList<>();
 		for (List<Ablesung> toFilter : ablesungen.values()) {

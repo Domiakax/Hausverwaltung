@@ -23,7 +23,7 @@ import lombok.Setter;
 @JsonDeserialize(keyUsing = KundeJSONDeserializer.class)
 public class Kunde {
 	@EqualsAndHashCode.Include
-	private UUID kdnr;
+	private UUID id;
 	private String name, vorname;
 
 	public Kunde(String name, String vorname) {
