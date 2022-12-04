@@ -62,7 +62,6 @@ class ServerTest {
 	static void setUp() {
 		setUpKundenList();
 		Server.startServer(url, false);
-		System.out.println("Server Ready");
 	}
 	
 	private static void setUpKundenList() {
@@ -76,7 +75,6 @@ class ServerTest {
 	@AfterAll
 	static void shutDown() {
 		Server.stopServer(false);
-		System.out.println("Tests abgeschlossen");
 	}
 
 

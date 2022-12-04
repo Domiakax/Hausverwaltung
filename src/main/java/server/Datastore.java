@@ -139,13 +139,13 @@ public class Datastore {
 //	}
 
 	public List<Kunde> getCopyOfEveryKunde() {
-		System.out.println("Copy");
+//		System.out.println("Copy");
 		List<Kunde> result = database_kunde.values().stream().sorted((k1, k2) -> k1.getName().compareTo(k2.getName()))
 				.collect(Collectors.toList());
-		for (Kunde k : result) {
-			System.out.println(k);
-		}
-		System.out.println("Copy Ende");
+//		for (Kunde k : result) {
+//			System.out.println(k);
+//		}
+//		System.out.println("Copy Ende");
 		return result;
 	}
 
@@ -177,7 +177,7 @@ public class Datastore {
 		try {
 //			mapper.setDateFormat();
 			mapper.writerWithDefaultPrettyPrinter().writeValue(file, database_kundeToAblesung);
-			System.out.println("File written");
+//			System.out.println("File written");
 		} catch (Exception e) {
 //			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -191,19 +191,19 @@ public class Datastore {
 		File file = filePathKunden.toFile();
 		if (file.exists()) {
 			try {
-				System.out.println("HashMap geladen mit size:");
+//				System.out.println("HashMap geladen mit size:");
 				TypeReference<ConcurrentHashMap<Kunde, List<Ablesung>>> typeRef = new TypeReference<ConcurrentHashMap<Kunde, List<Ablesung>>>() {
 				};
 				database_kundeToAblesung = mapper.readValue(file, typeRef);
-				System.out.println(database_kundeToAblesung.size());
+//				System.out.println(database_kundeToAblesung.size());
 				for (Kunde k : database_kundeToAblesung.keySet()) {
 					database_kunde.put(k.getId(), k);
 				}
 				for (List<Ablesung> aList : database_kundeToAblesung.values()) {
 					aList.forEach(a -> database_ablesung.put(a.getId(), a));
 				}
-				database_kunde.forEachValue(0, System.out::println);
-				database_ablesung.forEachValue(0, System.out::println);
+//				database_kunde.forEachValue(0, System.out::println);
+//				database_ablesung.forEachValue(0, System.out::println);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

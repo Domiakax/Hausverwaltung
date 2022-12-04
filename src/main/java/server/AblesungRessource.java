@@ -35,8 +35,8 @@ public class AblesungRessource {
 		if (k == null) {
 			return ResponseBuilder.badRequest();
 		}
-		System.out.println("kunde angelegt");
-		System.out.println(k);
+//		System.out.println("kunde angelegt");
+//		System.out.println(k);
 		return Datastore.getDataStore().addNewKunde(k) == null ? ResponseBuilder.badRequest()
 				: ResponseBuilder.kundeCreated(k);
 	}
@@ -70,7 +70,6 @@ public class AblesungRessource {
 		return Datastore.getDataStore().modifyExistingAblesung(a) ? ResponseBuilder.ablesungModified()
 				: ResponseBuilder.ablesungNotModified();
 	}
-	// Bis hier gecheckt
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -90,21 +89,13 @@ public class AblesungRessource {
 		return ResponseBuilder.kundeFound(toSearch);
 	}
 
-	// GET alle Ablesungen
 
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Path("getEveryAblesungFromKunde/{kundeId}")
-//	public Response getEveryAblesung(@PathParam("kundeId") String kundeId) {
-//		List<Ablesung> results = Datastore.getDataStore().getAblesungenFromKunde(kundeId);
-//		return results == null ? ResponseBuilder.kundeNotFound() : null;
-//	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(endpointAblesung + "/{ablesungId}")
 	public Response getSingleAblesung(@PathParam("ablesungId") String ablesungId) {
-		System.out.println("Ablesung normal");
+//		System.out.println("Ablesung normal");
 		Ablesung toSearch = Datastore.getDataStore().getSingleAblesung(ablesungId);
 		return toSearch == null ? ResponseBuilder.ablesungNotFound() : ResponseBuilder.ablesungFound(toSearch);
 	}
@@ -144,7 +135,7 @@ public class AblesungRessource {
 					result = Datastore.getDataStore().getAblesungenFromKunde(kid, dateBeginn, dateEnde);
 				}
 			}
-			System.out.println(result);
+//			System.out.println(result);
 
 			if (result == null) {
 				return ResponseBuilder.kundeNotFound();

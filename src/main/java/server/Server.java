@@ -24,7 +24,7 @@ public class Server {
 		if(loadFromFile) {
 			Datastore.getDataStore().loadFromFile();
 		}
-		System.out.println("Ready");
+		System.out.println("Server Ready");
 //		JOptionPane.showMessageDialog(null, "Ende");
 //		stopServer();
 	}
@@ -33,11 +33,11 @@ public class Server {
 	public static void stopServer(boolean saveToFile) {
 		if(serverStarted) {
 			server.stop(0);
-			System.out.println("Geschlossen");
+//			System.out.println("Geschlossen");
 			if(saveToFile) {
 				Datastore.getDataStore().saveToFile();
 			}
-			System.out.println("Saved");
+			System.out.println("Server stopped");
 			serverStarted = false;
 			server = null;
 		}
