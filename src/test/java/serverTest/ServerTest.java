@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -84,6 +85,7 @@ class ServerTest {
 	}
 
 	@Test
+	@DisplayName("Kunden werden via POST an den Server gesendet")
 	void t01_createNewKunden() {
 		for (Kunde k : kunden) {
 			Response response = postNeuerKunde(k);
@@ -128,6 +130,7 @@ class ServerTest {
 	}
 
 	@Test
+	@DisplayName("Nicht gültiges Kunden-Objekt wird via POST gesendet")
 	void t02_createNewKundeFailsIfKundeIsNull() {
 		Response re = postNeuerKunde(null);
 		assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), re.getStatus());
