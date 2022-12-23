@@ -130,7 +130,7 @@ class ServerTest {
 	}
 
 	@Test
-	@DisplayName("Nicht gültiges Kunden-Objekt wird via POST gesendet")
+	@DisplayName("Senden eines nicht gültigen Kunden-Objekt via POST gesendet führt zu Bad-Request")
 	void t02_createNewKundeFailsIfKundeIsNull() {
 		Response re = postNeuerKunde(null);
 		assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), re.getStatus());
