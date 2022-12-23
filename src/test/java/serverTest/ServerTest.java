@@ -85,7 +85,7 @@ class ServerTest {
 	}
 
 	@Test
-	@DisplayName("Kunden werden via POST an den Server gesendet")
+	@DisplayName("Kunden werden erfolgreich via POST an den Server gesendet")
 	void t01_createNewKunden() {
 		for (Kunde k : kunden) {
 			Response response = postNeuerKunde(k);
@@ -138,6 +138,7 @@ class ServerTest {
 	}
 	
 	@Test
+	@DisplayName("Daten eines bestehenden Kunde können erfolgreich via PUT geändert werden")
 	void t03_updateExistingKunde() {
 		String newName = "Aa";
 		k1.setName(newName);
@@ -152,6 +153,7 @@ class ServerTest {
 	}
 
 	@Test
+	@DisplayName("Senden eines nicht bestehenden Kunden-Objekts via PUT führt zu Not-Found")
 	void t04_updateNonExisitngKundeFails() {
 		Kunde notInServer = new Kunde("No", "No");
 		Response re = target.path(endpointKunden).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
@@ -160,6 +162,7 @@ class ServerTest {
 	}
 	
 	@Test
+	@DisplayName("")
 	void t05_deleteKunde() {
 		String k1ID = k1.getId().toString();
 		kunden.remove(k1);
