@@ -185,6 +185,7 @@ class ServerTest {
 	}
 
 	@Test
+	@DisplayName("Löschen eines nicht existierenden Kunden führt zu Not-Found")
 	void t06_deleteKundeFailsForNonExisitingKunde() {
 		Response re = target.path(endpointKunden.concat("/null")).request().accept(MediaType.APPLICATION_JSON).delete();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
@@ -192,6 +193,7 @@ class ServerTest {
 	}
 
 	@Test
+	@DisplayName("Liste aller Kunden vom Server enthält alle gesendeten Kunden")
 	void t07_getEveryKunde() {
 		Response re = target.path(endpointKunden).request().accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
@@ -207,6 +209,7 @@ class ServerTest {
 	}
 
 	@Test
+	@DisplayName("Einzelner Kunde kann vom Server via Id im Pfad gesendet werden")
 	void t08_getSingleKunde() {
 		Response re = target.path(endpointKunden.concat("/").concat(k2_RangeTest.getId().toString()))
 				.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).get();
@@ -216,6 +219,7 @@ class ServerTest {
 	}
 
 	@Test
+	@DisplayName("Wird ein einzelner n")
 	void t09_getSingleKundeFailsForNonExistingKunde() {
 		Response re = target.path(endpointKunden.concat("/null")).request().accept(MediaType.APPLICATION_JSON).get();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), re.getStatus());
