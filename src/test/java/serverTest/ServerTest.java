@@ -81,11 +81,6 @@ class ServerTest {
 		Server.stopServer(false);
 	}
 
-	@AfterEach
-	void prepareNextTest() {
-
-	}
-
 	@BeforeEach
 	void resetClient() {
 		target = client.target(url.concat(endpointHasuverwaltung));
