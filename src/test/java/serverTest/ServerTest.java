@@ -45,7 +45,7 @@ class ServerTest {
 	private static final Client client = ClientBuilder.newClient();
 	private WebTarget target = client.target(url);
 
-	private static final String endpointHasuverwaltung = "/hausverwaltung";
+	private static final String endpointHausverwaltung = "/hausverwaltung";
 	private static final String endpointKunden = "kunden";
 	private static final String endpointAblesungen = "ablesungen";
 	private static final String endpointAblesungClientStart = "ablesungenVorZweiJahrenHeute";
@@ -83,7 +83,7 @@ class ServerTest {
 
 	@BeforeEach
 	void resetClient() {
-		target = client.target(url.concat(endpointHasuverwaltung));
+		target = client.target(url.concat(endpointHausverwaltung));
 	}
 
 	@Test
