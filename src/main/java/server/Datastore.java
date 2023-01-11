@@ -221,7 +221,7 @@ public class Datastore {
 	}
 
 	public List<Ablesung> getAblesungenForClientStart() {
-		return database_ablesung.values().stream().filter(a -> a.getDatum().isAfter(ablesungGrenze))
+		return database_ablesung.values().stream().filter(a -> !a.getDatum().isBefore(ablesungGrenze))
 				.collect(Collectors.toList());
 	}
 
@@ -259,7 +259,7 @@ public class Datastore {
 		try {
 			UUID kid = UUID.fromString(id);
 			Kunde k = database_kunde.get(kid);
-			return database_kundeToAblesung.get(k).stream().filter(x -> x.getDatum().isAfter(beginn))
+			return database_kundeToAblesung.get(k).stream().filter(x -> !x.getDatum().isBefore(beginn))
 					.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 		} catch (Exception e) {
 			return null;
@@ -270,7 +270,7 @@ public class Datastore {
 		try {
 			UUID kid = UUID.fromString(id);
 			Kunde k = database_kunde.get(kid);
-			return database_kundeToAblesung.get(k).stream().filter(x -> x.getDatum().isBefore(ende))
+			return database_kundeToAblesung.get(k).stream().filter(x -> !x.getDatum().isAfter(ende))
 					.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 		} catch (Exception e) {
 			return null;
@@ -282,7 +282,7 @@ public class Datastore {
 			UUID kid = UUID.fromString(id);
 			Kunde k = database_kunde.get(kid);
 			return database_kundeToAblesung.get(k).stream()
-					.filter(x -> x.getDatum().isAfter(beginn) && x.getDatum().isBefore(ende))
+					.filter(x -> !x.getDatum().isBefore(beginn) && !x.getDatum().isAfter(ende))
 					.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 		} catch (Exception e) {
 			return null;
@@ -291,17 +291,17 @@ public class Datastore {
 
 	public List<Ablesung> getAblesungen(LocalDate beginn, LocalDate ende) {
 		return database_ablesung.values().stream()
-				.filter(x -> x.getDatum().isAfter(beginn) && x.getDatum().isBefore(ende))
+				.filter(x -> !x.getDatum().isBefore(beginn) && !x.getDatum().isAfter(ende))
 				.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 	}
 
 	public List<Ablesung> getAblesungenSince(LocalDate beginn) {
-		return database_ablesung.values().stream().filter(x -> x.getDatum().isAfter(beginn))
+		return database_ablesung.values().stream().filter(x -> !x.getDatum().isBefore(beginn))
 				.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 	}
 
 	public List<Ablesung> getAblesungUntil(LocalDate end) {
-		return database_ablesung.values().stream().filter(x -> x.getDatum().isBefore(end))
+		return database_ablesung.values().stream().filter(x -> !x.getDatum().isAfter(end))
 				.sorted((a1, a2) -> a1.getDatum().compareTo(a2.getDatum())).collect(Collectors.toList());
 	}
 
