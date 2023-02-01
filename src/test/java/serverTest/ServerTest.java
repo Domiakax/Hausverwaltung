@@ -40,6 +40,7 @@ import server.Server;
 @TestMethodOrder(MethodOrderer.MethodName.class)
 class ServerTest {
 
+	// ToDO: Datum bei Filterung Tests hardgecodet 2021
 	private static final String url = "http://localhost:8080/test";
 	private static final Client client = ClientBuilder.newClient();
 	private WebTarget target = client.target(url);
