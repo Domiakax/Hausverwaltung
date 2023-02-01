@@ -1,15 +1,9 @@
-package server;
+package database;
 
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-
-import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,16 +17,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@XmlRootElement
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-//@EqualsAndHashCode
-@JsonTypeName(value="ablesung")
-public class Ablesung {
+public class Ablesung implements IAblesung{
 	@EqualsAndHashCode.Include
 	private UUID id; 
 	private String zaehlernummer;
-	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate datum;
 	private Kunde kunde;
 	private String kommentar;
@@ -56,5 +45,11 @@ public class Ablesung {
 		this.kommentar = kommentar;
 		this.neuEingebaut = neuEingebaut;
 		this.zaehlerstand = zaehlerstand;
+	}
+
+	@Override
+	public void bla() {
+		// TODO Auto-generated method stub
+		
 	}
 }

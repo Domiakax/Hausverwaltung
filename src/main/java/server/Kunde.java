@@ -16,11 +16,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+//@EqualsAndHashCode
 @XmlRootElement
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName(value="kunde")
-@JsonDeserialize(keyUsing = KundeJSONDeserializer.class)
+//@JsonDeserialize(keyUsing = KundeJSONDeserializer.class)
 public class Kunde {
 	@EqualsAndHashCode.Include
 	private UUID id;
@@ -36,14 +37,14 @@ public class Kunde {
 		setVorname(update.vorname);
 	}
 	
-	@Override
-	public String toString() {
-		try {
-			return JSONUtil.toJSON(this);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-	}
+//	@Override
+//	public String toString() {
+//		try {
+//			return JSONUtil.toJSON(this);
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			throw new RuntimeException(e);
+//		}
+//	}
 }
