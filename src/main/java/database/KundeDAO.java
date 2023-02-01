@@ -20,6 +20,6 @@ public interface KundeDAO {
 			values(:name, :vorname)
 			""")
 	@GetGeneratedKeys
-	String insert(@Bind("name") String name, @Bind("vorname") String vorname);
+	long insert(@Bind("name") String name, @Bind("vorname") String vorname);
 
 }
