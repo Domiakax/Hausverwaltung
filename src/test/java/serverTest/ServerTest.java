@@ -144,7 +144,9 @@ class ServerTest {
 	@DisplayName("Daten eines bestehenden Kunde können erfolgreich via PUT geändert werden")
 	void t03_updateExistingKunde() {
 		String newName = "Aa";
+		List<Ablesung> temp = ablesungen.remove(k1_crudTest);
 		k1_crudTest.setName(newName);
+		ablesungen.put(k1_crudTest, temp);
 		Response re = target.path(endpointKunden).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
 				.put(Entity.entity(k1_crudTest, MediaType.APPLICATION_JSON));
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
@@ -223,8 +225,13 @@ class ServerTest {
 	@Test
 	@DisplayName("Ablesung kann erfolgreich via PUT aktualisiert werden")
 	void t10_updateExistingAblesung() {
+//		List<Ablesung> temp = ablesungen.get(ablesung_crudTest.getKunde());
+//		temp.remove(ablesung_crudTest);
 		final int newZaehlerstand = ablesung_crudTest.getZaehlerstand().intValue() + 100;
 		ablesung_crudTest.setZaehlerstand(newZaehlerstand);
+//		temp.add(ablesung_crudTest);
+		
+		
 		Response re = target.path(endpointAblesungen).request(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_PLAIN)
 				.put(Entity.entity(ablesung_crudTest, MediaType.APPLICATION_JSON));
 		assertEquals(Response.Status.OK.getStatusCode(), re.getStatus());
