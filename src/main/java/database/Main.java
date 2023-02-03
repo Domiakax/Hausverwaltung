@@ -1,6 +1,7 @@
 package database;
 
 import java.net.URI;
+import java.util.UUID;
 
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -22,10 +23,13 @@ public class Main {
 	private static final String url = "http://localhost:8080/test";
 	
 	public static void main(String[] args) {
-//		Jdbi jdbi = Jdbi.create("jdbc:mariadb://localhost:3306/hausverwaltung", "root", "");
-//		System.out.println("connected");
-//		jdbi.installPlugin(new SqlObjectPlugin());
-//		final Handle handle = jdbi.open();
+		DatabaseConnector con = DatabaseConnector.getDatabaseConnector();
+		Kunde k = new Kunde();
+		k.setName("a");
+		k.setVorname("a");
+		k.setId(UUID.randomUUID());
+		
+		con.addKunde(k);
 //		
 //		final KundeDAO kundeDao = handle.attach(KundeDAO.class);
 //		kundeDao.createTable();
@@ -34,9 +38,9 @@ public class Main {
 //		System.out.println(kundeDao.insert(k.getName(), k.getVorname()));
 //		
 //		System.out.println("Done");
-		final ResourceConfig rc = new ResourceConfig().packages("database");
-		HttpServer server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
-		System.out.println("Server ready");
+//		final ResourceConfig rc = new ResourceConfig().packages("database");
+//		HttpServer server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
+//		System.out.println("Server ready");
 		
 	}
 

@@ -1,14 +1,25 @@
 package database;
 
+import java.util.UUID;
+
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface KundeDAO {
 	
+//	@SqlUpdate(""" 
+//			Create Table if not exists kunde(
+//				uuid uuid primary key default uuid(),
+//				name varchar(255),
+//				vorname varchar(255)
+//			)
+//			""")
 	@SqlUpdate(""" 
 			Create Table if not exists kunde(
-				uuid Binary(16) default uuid() primary key,
+				id int primary key auto_increment, 
+				uuid uuid not null,
 				name varchar(255),
 				vorname varchar(255)
 			)
@@ -16,10 +27,9 @@ public interface KundeDAO {
 	void createTable();
 	
 	@SqlUpdate("""
-			Insert into kunde(name, vorname)
-			values(:name, :vorname)
+			Insert into kunde(uuid, name, vorname)
+			values(:id, :name, :vorname)
 			""")
-	@GetGeneratedKeys
-	long insert(@Bind("name") String name, @Bind("vorname") String vorname);
+	void insert(@BindBean Kunde k);
 
 }

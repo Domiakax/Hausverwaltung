@@ -8,6 +8,7 @@ import server.Kunde;
 
 @Path("hausverwaltung/v2")
 public class HausverwaltungRessource implements IHausverwaltungRessource{
+	
 
 	@Override
 	public Response addKunde(Kunde k) {

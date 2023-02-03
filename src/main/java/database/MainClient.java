@@ -23,19 +23,19 @@ public class MainClient {
 				.accept(MediaType.APPLICATION_JSON).post(Entity.entity(k, MediaType.APPLICATION_JSON));
 		System.out.println(re.readEntity(String.class));
 		
-		Ablesung a = new Ablesung();
-		a.setDatum(LocalDate.now());
-		a.setKommentar("bla");
-		a.setNeuEingebaut(false);
-		a.setZaehlernummer("abc");
-		a.setKunde(k);
-		a.setZaehlerstand(123);
-		
-		Response re2 = target.path("hausverwaltung/v2").path("readings").request(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON).post(Entity.entity(a, MediaType.APPLICATION_JSON));
-		
-		System.out.println(re2);
-		System.out.println(re2.readEntity(Ablesung.class));
+//		Ablesung a = new Ablesung();
+//		a.setDatum(LocalDate.now());
+//		a.setKommentar("bla");
+//		a.setNeuEingebaut(false);
+//		a.setZaehlernummer("abc");
+//		a.setKunde(k);
+//		a.setZaehlerstand(123);
+//		
+//		Response re2 = target.path("hausverwaltung/v2").path("readings").request(MediaType.APPLICATION_JSON)
+//				.accept(MediaType.APPLICATION_JSON).post(Entity.entity(a, MediaType.APPLICATION_JSON));
+//		
+//		System.out.println(re2);
+//		System.out.println(re2.readEntity(Ablesung.class));
 	}
 
 }

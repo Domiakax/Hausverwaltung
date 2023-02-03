@@ -2,6 +2,8 @@ package database;
 
 import java.util.UUID;
 
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,12 +15,15 @@ import lombok.Setter;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
-//@JsonTypeName(value="kunde")
 public class Kunde implements IKunde{
 	
+		@ColumnName("k_id")
 		@EqualsAndHashCode.Include
 		private UUID id;
-		private String name, vorname;
+		@ColumnName("k_name")
+		private String name;
+		@ColumnName("k_vorname")
+		private String vorname;
 
 		public Kunde(String name, String vorname) {
 			setName(name);
