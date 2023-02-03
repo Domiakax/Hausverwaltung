@@ -23,7 +23,7 @@ public class Ablesung implements IAblesung{
 	private UUID id; 
 	private String zaehlernummer;
 	private LocalDate datum;
-	private Kunde kunde;
+	private IKunde kunde;
 	private String kommentar;
 	private boolean neuEingebaut;
 	private Number zaehlerstand;

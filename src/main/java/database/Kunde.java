@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 //@JsonTypeName(value="kunde")
-public class Kunde{
+public class Kunde implements IKunde{
 	
 		@EqualsAndHashCode.Include
 		private UUID id;
