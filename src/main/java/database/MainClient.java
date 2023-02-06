@@ -1,6 +1,7 @@
 package database;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -21,9 +22,26 @@ public class MainClient {
 		k.setVorname("a");
 		Response re = target.path("hausverwaltung/v2").path("customers").request(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON).post(Entity.entity(k, MediaType.APPLICATION_JSON));
-		System.out.println(re.readEntity(String.class));
+		System.out.println(re.toString());
+		Kunde kR = re.readEntity(Kunde.class);
+		System.out.println(kR);
+		k.setId(kR.getId());
 		
-//		Ablesung a = new Ablesung();
+		k.setName(";Select * from kunde;");
+//		k.setId(null);
+		re = target.path("hausverwaltung/v2").path("customers").request(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON).put(Entity.entity(k, MediaType.APPLICATION_JSON));
+		
+		System.out.println(re);
+		System.out.println(re.readEntity(String.class));
+		 
+		re = target.path("hausverwaltung/v2").path("customers").path(k.getId().toString()).request().accept(MediaType.APPLICATION_JSON).get();
+		System.out.println(re);
+		
+		
+		
+		
+		//		Ablesung a = new Ablesung();
 //		a.setDatum(LocalDate.now());
 //		a.setKommentar("bla");
 //		a.setNeuEingebaut(false);

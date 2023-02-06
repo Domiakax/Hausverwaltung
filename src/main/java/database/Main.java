@@ -23,13 +23,16 @@ public class Main {
 	private static final String url = "http://localhost:8080/test";
 	
 	public static void main(String[] args) {
-		DatabaseConnector con = DatabaseConnector.getDatabaseConnector();
-		Kunde k = new Kunde();
-		k.setName("a");
-		k.setVorname("a");
-		k.setId(UUID.randomUUID());
-		
-		con.addKunde(k);
+//		DatabaseConnector con = DatabaseConnector.getDatabaseConnector();
+//		Kunde k = new Kunde();
+//		k.setName("a");
+//		k.setVorname("a");
+//		k.setId(UUID.randomUUID());
+//		
+//		con.addKunde(k);
+//		
+//		k.setName("B");
+//		con.updateKunde(k);
 //		
 //		final KundeDAO kundeDao = handle.attach(KundeDAO.class);
 //		kundeDao.createTable();
@@ -38,9 +41,9 @@ public class Main {
 //		System.out.println(kundeDao.insert(k.getName(), k.getVorname()));
 //		
 //		System.out.println("Done");
-//		final ResourceConfig rc = new ResourceConfig().packages("database");
-//		HttpServer server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
-//		System.out.println("Server ready");
+		final ResourceConfig rc = new ResourceConfig().packages("database");
+		HttpServer server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
+		System.out.println("Server ready");
 		
 	}
 

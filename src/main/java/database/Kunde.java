@@ -1,5 +1,6 @@
 package database;
 
+import java.beans.ConstructorProperties;
 import java.util.UUID;
 
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
@@ -14,7 +15,6 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-@AllArgsConstructor
 public class Kunde implements IKunde{
 	
 		@ColumnName("k_id")
@@ -30,9 +30,19 @@ public class Kunde implements IKunde{
 			setVorname(vorname);
 		}
 		
+		
+		
 		public void updateKunde(Kunde update) {
 			setName(update.name);
 			setVorname(update.vorname);
+		}
+
+
+		@ConstructorProperties({"k_id, k_name, k_vorname"})
+		public Kunde(UUID id, String name, String vorname) {
+			this.id = id;
+			this.name = name;
+			this.vorname = vorname;
 		}
 
 }
