@@ -16,7 +16,7 @@ import jakarta.ws.rs.core.Response;
 public class HausverwaltungRessource {
 	
 	public static final String ENDPOINT_KUNDE = "customers";
-	
+	public static final String ENDPOINT_ABLESUNG = "readings";
 
 	@Path(ENDPOINT_KUNDE)
 	@Consumes(MediaType.APPLICATION_JSON)
