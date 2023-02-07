@@ -17,8 +17,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Kunde implements IKunde{
 	
-		@ColumnName("k_id")
 		@EqualsAndHashCode.Include
+		@ColumnName("k_id")
 		private UUID id;
 		@ColumnName("k_name")
 		private String name;
@@ -38,7 +38,6 @@ public class Kunde implements IKunde{
 		}
 
 
-		@ConstructorProperties({"k_id, k_name, k_vorname"})
 		public Kunde(UUID id, String name, String vorname) {
 			this.id = id;
 			this.name = name;

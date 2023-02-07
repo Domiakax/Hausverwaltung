@@ -11,6 +11,7 @@ public class DatabaseConnector {
 	private static final String dbUser = "root";
 	private static final String dbUserPW = "";
 	private static KundeDAO kundeDao;
+	private static AblesungDAO ablesungDao;
 	
 	public static DatabaseConnector getDatabaseConnector() {
 		if(connector == null) {
@@ -24,8 +25,10 @@ public class DatabaseConnector {
 		jdbi.installPlugin(new SqlObjectPlugin());
 		final Handle handle = jdbi.open();
 		kundeDao = handle.attach(KundeDAO.class);
+		ablesungDao = handle.attach(AblesungDAO.class);
 		System.out.println("create Table");
 		kundeDao.createTable();
+		ablesungDao.createTable();
 	}
 	
 	public void addKunde(Kunde k) {
@@ -38,9 +41,9 @@ public class DatabaseConnector {
 	}
 	
 	public Kunde getKunde(String uuid) {
-		Kunde k = kundeDao.get(uuid);
 		System.out.println("Before SQL Query");
-		return kundeDao.get(uuid);
+		Kunde k = kundeDao.get(uuid);
+		return k;
 	}
 
 }

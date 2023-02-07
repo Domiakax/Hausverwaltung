@@ -50,14 +50,28 @@ public class HausverwaltungRessource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	public Response getKunde(@PathParam("uuid")String uuid) {
+		System.out.println("Endpoint: Kunde GET");
 		Kunde k = DatabaseConnector.getDatabaseConnector().getKunde(uuid);
 		return ResponseBuilderDatabase.getKunde(k);
 	}
 	
+	@Path(ENDPOINT_ABLESUNG)
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addReading(Ablesung r) {
 		System.out.println("Endpoint: POST Ablesung");
 		r.setId(UUID.randomUUID());
 		return Response.status(Response.Status.OK).entity(r).build();
+	}
+	
+	
+	@GET
+	@Path("test")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String test() {
+		System.out.println("Test-Endpoint");
+		return "test";
 	}
 
 	

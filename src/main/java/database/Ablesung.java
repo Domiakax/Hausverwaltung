@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import org.jdbi.v3.core.mapper.Nested;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -22,13 +23,19 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Ablesung implements IAblesung{
 	@EqualsAndHashCode.Include
-	private UUID id; 
+	@ColumnName("a_id")
+	private UUID id;
+	@ColumnName("a_zaehlernummer")
 	private String zaehlernummer;
+	@ColumnName("a_datum")
 	private LocalDate datum;
 	@Nested
 	private IKunde kunde;
+	@ColumnName("a_Kommentar")
 	private String kommentar;
+	@ColumnName("a_neuEingabut")
 	private boolean neuEingebaut;
+	@ColumnName("a_zaehlerstand")
 	private Number zaehlerstand;
 	
 	public void updateAblesung(Ablesung a) {
@@ -40,7 +47,7 @@ public class Ablesung implements IAblesung{
 		this.zaehlerstand = a.zaehlerstand;
 	}
 
-	public Ablesung(String zaehlernummer, LocalDate datum, Kunde kunde, String kommentar, boolean neuEingebaut,
+	public Ablesung(String zaehlernummer, LocalDate datum, IKunde kunde, String kommentar, boolean neuEingebaut,
 			int zaehlerstand) {
 		this.zaehlernummer = zaehlernummer;
 		this.datum = datum;

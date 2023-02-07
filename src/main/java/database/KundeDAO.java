@@ -1,6 +1,7 @@
 package database;
 
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -38,7 +39,7 @@ public interface KundeDAO {
 	@SqlQuery("""
 			Select uuid as k_id, name as k_name, vorname as k_vorname from kunde where uuid = :uuid;
 			""")
-	@RegisterBeanMapper(Kunde.class)
+	@RegisterFieldMapper(Kunde.class)
 	Kunde get(@Bind("uuid") String uuid);
 
 }

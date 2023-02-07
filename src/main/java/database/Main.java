@@ -20,7 +20,7 @@ import jakarta.ws.rs.core.Response;
 
 public class Main {
 	
-	private static final String url = "http://localhost:8080/test";
+	public  static final String url = "http://localhost:8080/test";
 	
 	public static void main(String[] args) {
 //		DatabaseConnector con = DatabaseConnector.getDatabaseConnector();
