@@ -45,5 +45,9 @@ public class DatabaseConnector {
 		Kunde k = kundeDao.get(uuid);
 		return k;
 	}
+	
+	public Ablesung addAblesung(Ablesung a) {
+		
+	}
 
 }
