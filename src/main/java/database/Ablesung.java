@@ -4,6 +4,8 @@ package database;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import org.jdbi.v3.core.mapper.Nested;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,6 +25,7 @@ public class Ablesung implements IAblesung{
 	private UUID id; 
 	private String zaehlernummer;
 	private LocalDate datum;
+	@Nested
 	private IKunde kunde;
 	private String kommentar;
 	private boolean neuEingebaut;
@@ -47,9 +50,4 @@ public class Ablesung implements IAblesung{
 		this.zaehlerstand = zaehlerstand;
 	}
 
-	@Override
-	public void bla() {
-		// TODO Auto-generated method stub
-		
-	}
 }
