@@ -46,8 +46,9 @@ public class DatabaseConnector {
 		return k;
 	}
 	
-	public Ablesung addAblesung(Ablesung a) {
-		
+	public void addAblesung(Ablesung a) {
+		System.out.println("Before SQL");
+		ablesungDao.addAblesung(a);
 	}
 
 }

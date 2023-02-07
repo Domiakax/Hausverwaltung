@@ -62,6 +62,7 @@ public class HausverwaltungRessource {
 	public Response addReading(Ablesung r) {
 		System.out.println("Endpoint: POST Ablesung");
 		r.setId(UUID.randomUUID());
+		DatabaseConnector.getDatabaseConnector().addAblesung(r);
 		return Response.status(Response.Status.OK).entity(r).build();
 	}
 	

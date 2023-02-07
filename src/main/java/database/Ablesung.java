@@ -30,7 +30,7 @@ public class Ablesung implements IAblesung{
 	@ColumnName("a_datum")
 	private LocalDate datum;
 	@Nested
-	private IKunde kunde;
+	private Kunde kunde;
 	@ColumnName("a_Kommentar")
 	private String kommentar;
 	@ColumnName("a_neuEingabut")
@@ -47,7 +47,7 @@ public class Ablesung implements IAblesung{
 		this.zaehlerstand = a.zaehlerstand;
 	}
 
-	public Ablesung(String zaehlernummer, LocalDate datum, IKunde kunde, String kommentar, boolean neuEingebaut,
+	public Ablesung(String zaehlernummer, LocalDate datum, Kunde kunde, String kommentar, boolean neuEingebaut,
 			int zaehlerstand) {
 		this.zaehlernummer = zaehlernummer;
 		this.datum = datum;

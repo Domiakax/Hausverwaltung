@@ -10,7 +10,7 @@ public interface AblesungDAO {
 				id int primary key auto_increment,
 				uuid uuid not null unique,
 				zaehlernummer varchar(255),
-				datum Date;
+				datum Date,
 				kundenId int,
 				kommentar varchar(255),
 				neuEingebaut boolean,
@@ -20,10 +20,10 @@ public interface AblesungDAO {
 	void createTable();
 	
 	@SqlUpdate("""
-			Insert into Ablesung(uuid, zaehlernummer, datum, kundenId, kommentar, neuEingebaut, zaehlerstand)
-			Select :id, :zaehlernummer, :datum, k.id, :kommentar, :neuEingebaut, :zaehlerstand
+			Insert into Ablesung(uuid, kundenId)
+			Select :id, k.id
 			From kunde k where k.uuid = :kunde.id 
 			""")
-	void addAblesung(@BindBean Ablesung a);
+	int addAblesung(@BindBean Ablesung a);
 
 }
