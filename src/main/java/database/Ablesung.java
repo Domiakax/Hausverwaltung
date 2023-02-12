@@ -24,7 +24,7 @@ import lombok.ToString;
 public class Ablesung implements IAblesung{
 	@EqualsAndHashCode.Include
 	@ColumnName("a_id")
-	private UUID id;
+	private UUID uuid;
 	@ColumnName("a_zaehlernummer")
 	private String zaehlernummer;
 	@ColumnName("a_datum")
@@ -40,7 +40,7 @@ public class Ablesung implements IAblesung{
 	
 	public void updateAblesung(Ablesung a) {
 		this.zaehlernummer = a.zaehlernummer;
-		this.datum = a.datum;
+//		this.datum = a.datum;
 		this.kunde = a.kunde;
 		this.kommentar = a.kommentar;
 		this.neuEingebaut = a.neuEingebaut;
@@ -50,7 +50,7 @@ public class Ablesung implements IAblesung{
 	public Ablesung(String zaehlernummer, LocalDate datum, Kunde kunde, String kommentar, boolean neuEingebaut,
 			int zaehlerstand) {
 		this.zaehlernummer = zaehlernummer;
-		this.datum = datum;
+//		this.datum = datum;
 		this.kunde = kunde;
 		this.kommentar = kommentar;
 		this.neuEingebaut = neuEingebaut;

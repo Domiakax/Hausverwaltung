@@ -1,7 +1,6 @@
 package database;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -28,7 +27,7 @@ public class MainClient {
 		System.out.println(re.toString());
 		Kunde kR = re.readEntity(Kunde.class);
 		System.out.println(kR);
-		k.setId(kR.getId());
+		k.setUuid(kR.getUuid());
 		
 		k.setName(";Select * from kunde;");
 //		k.setId(null);
@@ -38,7 +37,7 @@ public class MainClient {
 		System.out.println(re);
 		System.out.println(re.readEntity(String.class));
 //		 
-		re = target.path("hausverwaltung/v2").path("customers").path("44fe9759-f827-4e39-9c5d-a7eb793905df").request().accept(MediaType.APPLICATION_JSON).get();
+		re = target.path("hausverwaltung/v2").path("customers").path(k.getUuid().toString()).request().accept(MediaType.APPLICATION_JSON).get();
 		System.out.println(re);
 		System.out.println(re.readEntity(String.class));
 		
@@ -47,15 +46,25 @@ public class MainClient {
 		a.setDatum(LocalDate.now());
 		a.setKommentar("bla");
 		a.setNeuEingebaut(false);
-		a.setZaehlernummer("abc");
+		a.setZaehlernummer("123");
 		a.setKunde(k);
 		a.setZaehlerstand(123);
-		
+//		
 		Response re2 = target.path("hausverwaltung/v2").path("readings").request(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON).post(Entity.entity(a, MediaType.APPLICATION_JSON));
 		
 		System.out.println(re2);
-		System.out.println(re2.readEntity(Ablesung.class));
+//		System.out.println(re2.readEntity(Ablesung.class));
+		Ablesung result = re2.readEntity(Ablesung.class);
+		a.setUuid(result.getUuid());
+		
+		a.setKommentar("updated");
+//		a.setZaehlerstand(a.getZaehlerstand().doubleValue() + 100);
+		re2 = target.path("hausverwaltung/v2").path("readings").request(MediaType.APPLICATION_JSON)
+				.accept(MediaType.TEXT_PLAIN).put(Entity.entity(a, MediaType.APPLICATION_JSON));
+	
+		System.out.println(re2);
+		System.out.println(re2.readEntity(String.class));
 	}
 
 }

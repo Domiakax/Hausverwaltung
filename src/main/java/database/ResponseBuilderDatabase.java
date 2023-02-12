@@ -21,5 +21,12 @@ public class ResponseBuilderDatabase {
 	public static Response getKunde(Kunde k) {
 		return Response.status(Response.Status.OK).entity(k).build();
 	}
+	
+	public static Response updateAblesungSuccesful() {
+		return Response.status(Response.Status.OK).entity(Messages.ABLESUNG_MODIFIED).build();
+	}
 
+	public static Response updateAblesungFailed() {
+		return Response.status(Response.Status.NOT_FOUND).entity(Messages.ABLESUNG_NOT_MODIFIED).build();
+	}
 }

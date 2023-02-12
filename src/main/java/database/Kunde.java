@@ -10,16 +10,18 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-public class Kunde implements IKunde{
+@ToString
+public class Kunde{
 	
 		@EqualsAndHashCode.Include
 		@ColumnName("k_id")
-		private UUID id;
+		private UUID uuid;
 		@ColumnName("k_name")
 		private String name;
 		@ColumnName("k_vorname")
@@ -38,8 +40,8 @@ public class Kunde implements IKunde{
 		}
 
 
-		public Kunde(UUID id, String name, String vorname) {
-			this.id = id;
+		public Kunde(UUID uuid, String name, String vorname) {
+			this.uuid = uuid;
 			this.name = name;
 			this.vorname = vorname;
 		}

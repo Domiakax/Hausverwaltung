@@ -1,7 +1,10 @@
 package database;
 
+import java.util.UUID;
+
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.mapper.reflect.BeanMapper;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 public class DatabaseConnector {
@@ -21,10 +24,15 @@ public class DatabaseConnector {
 	}
 	
 	private DatabaseConnector() {
+		System.out.println("Setup DatabaseConnector");
 		final Jdbi jdbi  = Jdbi.create(urlDatabase, dbUser, dbUserPW);
 		jdbi.installPlugin(new SqlObjectPlugin());
 		final Handle handle = jdbi.open();
+		handle.registerArgument(new UUIDArgumentFactory());
+		handle.registerRowMapper(BeanMapper.factory(Kunde.class));
+		System.out.println("Setup Create Tables");
 		kundeDao = handle.attach(KundeDAO.class);
+//		System.out.println("Table Kunde created");
 		ablesungDao = handle.attach(AblesungDAO.class);
 		System.out.println("create Table");
 		kundeDao.createTable();
@@ -32,23 +40,33 @@ public class DatabaseConnector {
 	}
 	
 	public void addKunde(Kunde k) {
-		System.out.println("hier");
-		kundeDao.insert(k.getId().toString(), k.getName(), k.getVorname());;
+		System.out.println("addKunde: " + k.toString());
+		kundeDao.insert(k);
 	}
 	
 	public int updateKunde(Kunde k) {
-		return kundeDao.update(k.getId().toString(), k.getName(), k.getVorname());
+		return kundeDao.update(k);
 	}
 	
 	public Kunde getKunde(String uuid) {
 		System.out.println("Before SQL Query");
-		Kunde k = kundeDao.get(uuid);
+		Kunde k = kundeDao.get(UUID.fromString(uuid));
+		System.out.println("Found");
 		return k;
 	}
 	
 	public void addAblesung(Ablesung a) {
 		System.out.println("Before SQL");
 		ablesungDao.addAblesung(a);
+	}
+	
+	public boolean updateAblesung(Ablesung a) {
+		if(a == null) {
+			return false;
+		}
+		System.out.println("Before SQL Update");
+		int changedRows = ablesungDao.updateAblesung(a);
+		return changedRows == 0 ? false : true;
 	}
 
 }

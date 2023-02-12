@@ -4,7 +4,7 @@ import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface AblesungDAO {
-	
+
 	@SqlUpdate("""
 			Create Table if not exists Ablesung(
 				id int primary key auto_increment,
@@ -18,12 +18,21 @@ public interface AblesungDAO {
 			)
 			""")
 	void createTable();
-	
+
 	@SqlUpdate("""
-			Insert into Ablesung(uuid, kundenId)
-			Select :id, k.id
-			From kunde k where k.uuid = :kunde.id 
+			Insert into Ablesung(uuid, kundenId, datum, kommentar)
+			Select :uuid, k.id, :datum, :kommentar
+			From kunde k where k.uuid = :kunde.uuid
 			""")
 	int addAblesung(@BindBean Ablesung a);
+
+	//ToDo restliche Felder
+	@SqlUpdate("""
+			Update Ablesung set zaehlernummer = :zaehlernummer,
+			datum = :datum, kundenId = (Select id from kunde where uuid = :kunde.uuid),
+			kommentar = :kommentar
+			where uuid = :uuid
+			""")
+	int updateAblesung(@BindBean Ablesung a);
 
 }
