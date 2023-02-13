@@ -19,7 +19,7 @@ public class MainClient {
 		Response re = target.path("hausverwaltung/v2").path("test").request()
 				.accept(MediaType.APPLICATION_JSON).get();
 		System.out.println(re);
-		Kunde k = new Kunde();
+		IKunde k = new Kunde();
 		k.setName("A");
 		k.setVorname("a");
 		re = target.path("hausverwaltung/v2").path(HausverwaltungRessource.ENDPOINT_KUNDE).request(MediaType.APPLICATION_JSON)
@@ -45,7 +45,7 @@ public class MainClient {
 		Ablesung a = new Ablesung();
 		a.setDatum(LocalDate.now());
 		a.setKommentar("bla");
-		a.setNeuEingebaut(false);
+		a.setNeuEingebaut(true);
 		a.setZaehlernummer("123");
 		a.setKunde(k);
 		a.setZaehlerstand(123);
@@ -59,7 +59,7 @@ public class MainClient {
 		a.setUuid(result.getUuid());
 		
 		a.setKommentar("updated");
-//		a.setZaehlerstand(a.getZaehlerstand().doubleValue() + 100);
+		a.setZaehlerstand(a.getZaehlerstand()+ 100);
 		re2 = target.path("hausverwaltung/v2").path("readings").request(MediaType.APPLICATION_JSON)
 				.accept(MediaType.TEXT_PLAIN).put(Entity.entity(a, MediaType.APPLICATION_JSON));
 	

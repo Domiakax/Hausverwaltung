@@ -1,6 +1,10 @@
 package database;
 
+import java.util.UUID;
+
+import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface AblesungDAO {
@@ -20,19 +24,31 @@ public interface AblesungDAO {
 	void createTable();
 
 	@SqlUpdate("""
-			Insert into Ablesung(uuid, kundenId, datum, kommentar)
-			Select :uuid, k.id, :datum, :kommentar
+			Insert into Ablesung(uuid, kundenId, datum, kommentar, neuEingebaut, zaehlerstand)
+			Select :uuid, k.id, :datum, :kommentar, :neuEingebaut, :zaehlerstand
 			From kunde k where k.uuid = :kunde.uuid
 			""")
 	int addAblesung(@BindBean Ablesung a);
 
-	//ToDo restliche Felder
 	@SqlUpdate("""
 			Update Ablesung set zaehlernummer = :zaehlernummer,
 			datum = :datum, kundenId = (Select id from kunde where uuid = :kunde.uuid),
-			kommentar = :kommentar
+			kommentar = :kommentar, neuEingebaut = :neuEingebaut, zaehlerstand = :zaehlerstand
 			where uuid = :uuid
 			""")
 	int updateAblesung(@BindBean Ablesung a);
+	
+	@SqlUpdate("""
+			Delete from Ablesung where uuid = :uuid
+			""")
+	int deleteAblesung(@Bind UUID uuid);
+	
+	@SqlQuery("""
+			Select uuid,zaehlernummer,datum, (kundenId int,
+				kommentar varchar(255),
+				neuEingebaut boolean,
+				zaehlerstand double 
+			""")
+	Ablesung getAblesung(UUID uuid);
 
 }
