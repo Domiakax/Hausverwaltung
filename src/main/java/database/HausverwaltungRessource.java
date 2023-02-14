@@ -1,5 +1,6 @@
 package database;
 
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.ws.rs.Consumes;
@@ -17,6 +18,15 @@ public class HausverwaltungRessource {
 
 	public static final String ENDPOINT_KUNDE = "customers";
 	public static final String ENDPOINT_ABLESUNG = "readings";
+
+	
+	@GET
+	@Path("test")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String test() {
+		System.out.println("Test-Endpoint");
+		return "test";
+	}
 
 	@Path(ENDPOINT_KUNDE)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -54,6 +64,15 @@ public class HausverwaltungRessource {
 		Kunde k = DatabaseConnector.getDatabaseConnector().getKunde(uuid);
 		return ResponseBuilderDatabase.getKunde(k);
 	}
+	
+	@Path(ENDPOINT_ABLESUNG + "/{uuid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
+	public Response getAblesung(@PathParam("uuid") String uuid) {
+		System.out.println("Endpoint: Get Ablesung");
+		Ablesung a = DatabaseConnector.getDatabaseConnector().getAblesung(uuid);
+		return ResponseBuilderDatabase.getAblesung(a);
+	}
 
 	@Path(ENDPOINT_ABLESUNG)
 	@POST
@@ -77,12 +96,13 @@ public class HausverwaltungRessource {
 				: ResponseBuilderDatabase.updateAblesungFailed();
 	}
 
+	
+	@Path(ENDPOINT_KUNDE)
 	@GET
-	@Path("test")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String test() {
-		System.out.println("Test-Endpoint");
-		return "test";
+	public Response getEveryKunde() {
+		System.out.println("GET Every Kunde");
+		List<Kunde> kunden = DatabaseConnector.getDatabaseConnector().getEveryKunde();
+		return ResponseBuilderDatabase.getEveryKunde(kunden);
 	}
-
 }

@@ -1,7 +1,9 @@
 package database;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -44,11 +46,19 @@ public interface AblesungDAO {
 	int deleteAblesung(@Bind UUID uuid);
 	
 	@SqlQuery("""
-			Select uuid,zaehlernummer,datum, (kundenId int,
-				kommentar varchar(255),
-				neuEingebaut boolean,
-				zaehlerstand double 
+			Select a.uuid as a_id, zaehlernummer as a_zaehlernummer, datum as a_datum,
+				kommentar as a_kommentar, neuEingebaut as a_neuEingebaut,
+				zaehlerstand as a_zaehlerstand, k.uuid as k_id, k.name as k_name, k.vorname as k_vorname
+			From ablesung a left join kunde k on k.id = a.kundenId
+			Where a.uuid = :uuid 
 			""")
+	@RegisterRowMapper(AblesungRowMapper.class)
 	Ablesung getAblesung(UUID uuid);
+	
+//	@SqlQuery("""
+//			Select 
+//			""")
+//	@RegisterRowMapper(AblesungRowMapper.class)
+//	List<Ablesung> getAblesungenForClientStart();
 
 }

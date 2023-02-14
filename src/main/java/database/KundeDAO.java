@@ -1,5 +1,6 @@
 package database;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.jdbi.v3.core.mapper.reflect.BeanMapper;
@@ -47,5 +48,11 @@ public interface KundeDAO {
 			""")
 	@RegisterRowMapper(KundeRowMapper.class)
 	Kunde get(@Bind("p_uuid") UUID p_uuid);
+	
+	@SqlQuery("""
+			Select uuid as k_id, name as k_name, vorname as k_vorname from kunde
+			""")
+	@RegisterRowMapper(KundeRowMapper.class)
+	List<Kunde> getAll();
 
 }

@@ -12,9 +12,9 @@ public class KundeRowMapper implements RowMapper<Kunde>{
 	@Override
 	public Kunde map(ResultSet rs, StatementContext ctx) throws SQLException {
 		Kunde k = new Kunde();
-		k.setName(rs.getString("k_name"));
-		k.setVorname(rs.getString("k_vorname"));
-		k.setUuid(UUID.fromString(rs.getString("k_id")));
+		k.setName(rs.getString(Kunde.FIELD_KUNDEN_NAME));
+		k.setVorname(rs.getString(Kunde.FIELD_KUNDEN_VORNAME));
+		k.setUuid(UUID.fromString(rs.getString(Kunde.FIELD_KUNDEN_ID)));
 		return k;
 	}
 

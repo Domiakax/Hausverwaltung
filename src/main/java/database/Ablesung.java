@@ -23,21 +23,27 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Ablesung implements IAblesung{
 	
+	public static final String FIELD_ABLESUNG_ID = "a_id";
+	public static final String FIELD_ABLESUNG_ZAEHLERNUMMER = "a_zaehlernummer";
+	public static final String FIELD_ABLESUNG_DATUM = "a_datum";
+	public static final String FIELD_ABLESUNG_KOMMENTAR = "a_kommentar";
+	public static final String FIELD_ABLESUNG_NEUEINGEBAUT = "a_neuEingabut";
+	public static final String FIELD_ABLESUNG_ZAEHLERSTAND = "a_zaehlerstand";
 	
 	@EqualsAndHashCode.Include
-	@ColumnName("a_id")
+	@ColumnName(FIELD_ABLESUNG_ID)
 	private UUID uuid;
-	@ColumnName("a_zaehlernummer")
+	@ColumnName(FIELD_ABLESUNG_ZAEHLERNUMMER)
 	private String zaehlernummer;
-	@ColumnName("a_datum")
+	@ColumnName(FIELD_ABLESUNG_DATUM)
 	private LocalDate datum;
 	@Nested
 	private IKunde kunde;
-	@ColumnName("a_Kommentar")
+	@ColumnName(FIELD_ABLESUNG_KOMMENTAR)
 	private String kommentar;
-	@ColumnName("a_neuEingabut")
+	@ColumnName(FIELD_ABLESUNG_NEUEINGEBAUT)
 	private boolean neuEingebaut;
-	@ColumnName("a_zaehlerstand")
+	@ColumnName(FIELD_ABLESUNG_ZAEHLERSTAND)
 	private double zaehlerstand;
 	
 	public void updateAblesung(Ablesung a) {

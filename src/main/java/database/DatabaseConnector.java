@@ -1,5 +1,6 @@
 package database;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.jdbi.v3.core.Handle;
@@ -30,6 +31,7 @@ public class DatabaseConnector {
 		final Handle handle = jdbi.open();
 		handle.registerArgument(new UUIDArgumentFactory());
 		handle.registerRowMapper(BeanMapper.factory(Kunde.class));
+		handle.registerRowMapper(BeanMapper.factory(Ablesung.class));
 		System.out.println("Setup Create Tables");
 		kundeDao = handle.attach(KundeDAO.class);
 //		System.out.println("Table Kunde created");
@@ -55,6 +57,12 @@ public class DatabaseConnector {
 		return k;
 	}
 	
+	public Ablesung getAblesung(String uuid) {
+		System.out.println("Before SQL");
+		Ablesung a = ablesungDao.getAblesung(UUID.fromString(uuid));
+		return a;
+	}
+	
 	public void addAblesung(Ablesung a) {
 		System.out.println("Before SQL");
 		ablesungDao.addAblesung(a);
@@ -68,5 +76,13 @@ public class DatabaseConnector {
 		int changedRows = ablesungDao.updateAblesung(a);
 		return changedRows == 0 ? false : true;
 	}
+	
+	public List<Kunde> getEveryKunde(){
+		return kundeDao.getAll();
+	}
+	
+//	public List<Ablesung> getAblesungenForClientStart(){
+//		return ablesungDao.getAblesungenForClientStart();
+//	}
 
 }
