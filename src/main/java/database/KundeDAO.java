@@ -54,5 +54,12 @@ public interface KundeDAO {
 			""")
 	@RegisterRowMapper(KundeRowMapper.class)
 	List<Kunde> getAll();
+	
+	
+	@SqlUpdate("""
+			Delete from Kunde where uuid = :uuid
+			""")
+	int deleteKunde(@BindBean Kunde k);
+	
 
 }

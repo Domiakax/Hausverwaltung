@@ -60,5 +60,10 @@ public interface AblesungDAO {
 //			""")
 //	@RegisterRowMapper(AblesungRowMapper.class)
 //	List<Ablesung> getAblesungenForClientStart();
+	
+	@SqlUpdate("""
+			Update Ablesung set kundenId = null where kundenId = (Select id from Kunde where uuid = :uuid)
+			""")
+	void kundeDeleted(@BindBean Kunde k);
 
 }
