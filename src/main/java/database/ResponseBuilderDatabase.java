@@ -39,4 +39,8 @@ public class ResponseBuilderDatabase {
 	public static Response getAblesung(Ablesung a) {
 		return Response.status(Response.Status.OK).entity(a).build();
 	}
+	
+	public static Response getAblesungenForClientStart(List<Ablesung> ablesungen) {
+		return Response.status(Response.Status.OK).entity(ablesungen).build();
+	}
 }

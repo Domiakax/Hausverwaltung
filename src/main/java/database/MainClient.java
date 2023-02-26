@@ -73,6 +73,16 @@ public class MainClient {
 		re = target.path("hausverwaltung/v2").path("readings").path(a.getUuid().toString()).request().accept(MediaType.APPLICATION_JSON).get();
 		System.out.println(re);
 		System.out.println(re.readEntity(String.class));
+		
+		System.out.println("Get all customers");
+		re = target.path("hausverwaltung/v2").path("customers").request().accept(MediaType.APPLICATION_JSON).get();
+		System.out.println(re);
+		System.out.println(re.readEntity(String.class));
+		
+		System.out.println("--Get readings for clientstart--");
+		re = target.path("hausverwaltung/v2").path("clientStart").request().accept(MediaType.APPLICATION_JSON).get();
+		System.out.println(re);
+		System.out.println(re.readEntity(String.class));
 	}
 
 }

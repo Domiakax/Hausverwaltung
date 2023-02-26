@@ -27,7 +27,7 @@ public class Ablesung implements IAblesung{
 	public static final String FIELD_ABLESUNG_ZAEHLERNUMMER = "a_zaehlernummer";
 	public static final String FIELD_ABLESUNG_DATUM = "a_datum";
 	public static final String FIELD_ABLESUNG_KOMMENTAR = "a_kommentar";
-	public static final String FIELD_ABLESUNG_NEUEINGEBAUT = "a_neuEingabut";
+	public static final String FIELD_ABLESUNG_NEUEINGEBAUT = "a_neuEingebaut";
 	public static final String FIELD_ABLESUNG_ZAEHLERSTAND = "a_zaehlerstand";
 	
 	@EqualsAndHashCode.Include

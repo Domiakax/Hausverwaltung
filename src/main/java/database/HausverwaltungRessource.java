@@ -18,7 +18,7 @@ public class HausverwaltungRessource {
 
 	public static final String ENDPOINT_KUNDE = "customers";
 	public static final String ENDPOINT_ABLESUNG = "readings";
-
+	public static final String ENDPOINT_CLIENT_START = "clientStart";
 	
 	@GET
 	@Path("test")
@@ -104,5 +104,14 @@ public class HausverwaltungRessource {
 		System.out.println("GET Every Kunde");
 		List<Kunde> kunden = DatabaseConnector.getDatabaseConnector().getEveryKunde();
 		return ResponseBuilderDatabase.getEveryKunde(kunden);
+	}
+	
+	@Path(ENDPOINT_CLIENT_START)
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAblesungenForClientStart() {
+		System.out.println("GET ClientStart");
+		List<Ablesung> ablesungen = DatabaseConnector.getDatabaseConnector().getAblesungenForClientStart();
+		return ResponseBuilderDatabase.getAblesungenForClientStart(ablesungen);
 	}
 }

@@ -15,18 +15,22 @@ public class AblesungRowMapper implements RowMapper<Ablesung>{
 		System.out.println("Create Ablesung");
 		Ablesung a = new Ablesung();
 		a.setUuid(UUID.fromString(rs.getString(Ablesung.FIELD_ABLESUNG_ID)));
+		System.out.println("Try to parse Date");
 		a.setDatum(LocalDate.parse(rs.getString(Ablesung.FIELD_ABLESUNG_DATUM)));
 		a.setKommentar(rs.getString(Ablesung.FIELD_ABLESUNG_KOMMENTAR));
 		a.setNeuEingebaut(rs.getBoolean(Ablesung.FIELD_ABLESUNG_NEUEINGEBAUT));
+		System.out.println("Date parsed");
 		a.setZaehlernummer(rs.getString(Ablesung.FIELD_ABLESUNG_ZAEHLERNUMMER));
 		a.setZaehlerstand(rs.getDouble(Ablesung.FIELD_ABLESUNG_ZAEHLERSTAND));
 		
+		System.out.println("Ablesung bis jetzt: \n " + a);
 		Kunde k = new Kunde();
 		String sUUID = rs.getString(Kunde.FIELD_KUNDEN_ID);
 		if(sUUID!=null) {
 			k.setUuid(UUID.fromString(sUUID));
 			k.setName(rs.getString(Kunde.FIELD_KUNDEN_NAME));
 			k.setVorname(rs.getString(Kunde.FIELD_KUNDEN_VORNAME));
+			a.setKunde(k);
 		}
 		System.out.println("Ablesung created");
 		return a;

@@ -1,5 +1,6 @@
 package database;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,8 @@ public class DatabaseConnector {
 	private static final String dbUserPW = "";
 	private static KundeDAO kundeDao;
 	private static AblesungDAO ablesungDao;
+	
+	private static final LocalDate DATELINE = LocalDate.of(LocalDate.now().getYear()-2, 1, 1);
 	
 	public static DatabaseConnector getDatabaseConnector() {
 		if(connector == null) {
@@ -77,12 +80,15 @@ public class DatabaseConnector {
 		return changedRows == 0 ? false : true;
 	}
 	
+	
 	public List<Kunde> getEveryKunde(){
 		return kundeDao.getAll();
 	}
 	
-//	public List<Ablesung> getAblesungenForClientStart(){
-//		return ablesungDao.getAblesungenForClientStart();
-//	}
+	
+	public List<Ablesung> getAblesungenForClientStart(){
+		
+		return ablesungDao.getAblesungenForClientStart(DATELINE);
+	}
 
 }
