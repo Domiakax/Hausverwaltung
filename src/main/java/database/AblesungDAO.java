@@ -72,5 +72,19 @@ public interface AblesungDAO {
 			""")
 	@RegisterRowMapper(AblesungRowMapper.class)
 	List<Ablesung> getAblesungenForClientStart(@Bind("dateLine") LocalDate dateLine);
+	
+	@SqlQuery("""
+			Select a.uuid as a_id, zaehlernummer as a_zaehlernummer, datum as a_datum,
+				kommentar as a_kommentar, neuEingebaut as a_neuEingebaut,
+				zaehlerstand as a_zaehlerstand, k.uuid as k_id, k.name as k_name, k.vorname as k_vorname
+			From ablesung a left join kunde k on k.id = a.kundenId
+			Where k.uuid = :uuid
+			""")
+	@RegisterRowMapper(AblesungRowMapper.class)
+	List<Ablesung> getAblesungen(@BindBean Kunde k);
+	
+	List<Ablesung> getAblesungen(@BindBean Kunde k, @Bind LocalDate beginn);
+	
+	List<Ablesung> getAblesungen(@BindBean Kunde k, @Bind LocalDate beginn, @Bind LocalDate ende);
 
 }
