@@ -37,7 +37,7 @@ public class DatabaseConnector {
 		handle.registerRowMapper(BeanMapper.factory(Ablesung.class));
 		System.out.println("Setup Create Tables");
 		kundeDao = handle.attach(KundeDAO.class);
-//		System.out.println("Table Kunde created");
+		System.out.println("Kunde added to jdbi");
 		ablesungDao = handle.attach(AblesungDAO.class);
 		System.out.println("create Table");
 		kundeDao.createTable();

@@ -29,8 +29,8 @@ public interface AblesungDAO {
 	void createTable();
 
 	@SqlUpdate("""
-			Insert into Ablesung(uuid, kundenId, datum, kommentar, neuEingebaut, zaehlerstand)
-			Select :uuid, k.id, :datum, :kommentar, :neuEingebaut, :zaehlerstand
+			Insert into Ablesung(uuid, kundenId, datum, kommentar, neuEingebaut, zaehlerstand, zaehlernummer)
+			Select :uuid, k.id, :datum, :kommentar, :neuEingebaut, :zaehlerstand, :zaehlernummer
 			From kunde k where k.uuid = :kunde.uuid
 			""")
 	int addAblesung(@BindBean Ablesung a);
@@ -83,8 +83,8 @@ public interface AblesungDAO {
 	@RegisterRowMapper(AblesungRowMapper.class)
 	List<Ablesung> getAblesungen(@BindBean Kunde k);
 	
-	List<Ablesung> getAblesungen(@BindBean Kunde k, @Bind LocalDate beginn);
-	
-	List<Ablesung> getAblesungen(@BindBean Kunde k, @Bind LocalDate beginn, @Bind LocalDate ende);
+//	List<Ablesung> getAblesungen(@BindBean Kunde k, @Bind LocalDate beginn);
+//	
+//	List<Ablesung> getAblesungen(@BindBean Kunde k, @Bind LocalDate beginn, @Bind LocalDate ende);
 
 }

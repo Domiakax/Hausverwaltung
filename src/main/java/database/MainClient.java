@@ -41,6 +41,11 @@ public class MainClient {
 		System.out.println(re);
 		System.out.println(re.readEntity(String.class));
 		
+		re = target.path("hausverwaltung/v2").path("customers").request().accept(MediaType.APPLICATION_JSON).get();
+		System.out.println("GET all customers");
+		System.out.println(re);
+		System.out.println(re.readEntity(String.class));
+		
 		
 		Ablesung a = new Ablesung();
 		a.setDatum(LocalDate.now());
