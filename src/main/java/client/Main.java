@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -39,8 +38,6 @@ public class Main {
 		target.path("kunden").request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(Entity.entity(k, MediaType.APPLICATION_JSON));
 		 Kunde s = b.readEntity(Kunde.class);
 //		System.out.println(b.readEntity(String.class));
-		JSONObject obj = new JSONObject(s);
-		System.out.println(obj);
 		
 		target = client.target("http://localhost:8080/test/hasuverwaltung");
 //		k.setKdnr(1);

@@ -53,11 +53,6 @@
 			<version>5.9.1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20220320</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jdbi/jdbi3-core -->
 		<dependency>
 			<groupId>org.jdbi</groupId>
